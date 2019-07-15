@@ -5,7 +5,7 @@ FROM cimg/base:edge
 LABEL maintainer="CircleCI Community & Partner Engineering Team <community-partner@circleci.com>"
 
 ENV DEBIAN_FRONTEND noninteractive
-ENV NODE_VERSION 10.15.0
+ENV NODE_VERSION 10.15.1
 
 RUN curl -L -o node.tar.xz "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz" && \
 	tar -xJf node.tar.xz -C /usr/local --strip-components=1 && \
