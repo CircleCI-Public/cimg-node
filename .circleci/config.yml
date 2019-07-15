@@ -1,0 +1,28 @@
+version: 2.1
+
+workflows:
+  main:
+    jobs:
+      - build:
+          context: orb-publishing
+
+jobs:
+  build:
+    docker:
+      - image: cibuilds/docker:18.09
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      # temp until a custom docker image with Bash is built
+      - run: apk add --update --no-cache bash
+      - run:
+          name: "Build Docker Images"
+          command: ./build-images.sh
+      - deploy:
+          name: "Publish Docker Images (master branch only)"
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+              docker push cimg/node
+            fi
