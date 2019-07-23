@@ -107,7 +107,7 @@ jobs:
 
       - save_cache:
           paths: ~/project
-          key: <<parameters.language>>-dockerfiles<-{{ .Branch }}-{{ .Revision }}
+          key: <<parameters.language>>-dockerfiles-{{ .Branch }}-{{ .Revision }}
 
       - persist_to_workspace:
           root: ~/
