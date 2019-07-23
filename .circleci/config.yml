@@ -3,7 +3,7 @@ version: 2.1
 orbs:
   bt: circleci/build-tools@2.6.3
   cimg: cci-dev/cimg@0.0.24
-  docker: circleci/docker@0.5.12
+  docker: circleci/docker@0.5.13
 
 parameters:
   commit:
@@ -56,10 +56,6 @@ jobs:
           command: |
             source ./manifest
 
-            BRANCH=
-
-            echo "$BRANCH"
-
             for version in "${versions[@]}"
             do
               curl -u ${CIRCLE_TOKEN}: -X POST --header "Content-Type: application/json" -d "{
@@ -72,7 +68,7 @@ jobs:
                   \"target\": \"<<parameters.target>>\",
                   \"monthly\": <<parameters.monthly>>
                 }
-              }" https://circleci.com/api/v2/project/gh/CircleCI-Public/cimg-rust/pipeline
+              }" https://circleci.com/api/v2/project/gh/CircleCI-Public/cimg-node/pipeline
             done
 
   prepare-dockerfiles:
