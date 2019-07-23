@@ -74,8 +74,10 @@ RUN YARN_VERSION=$(curl --silent --show-error \
   grep tag_name | cut -d '"' -f 4 | \
   cut -d 'v' -f 2) \
 	&& curl -L -o yarn.tar.gz "https://yarnpkg.com/downloads/$YARN_VERSION/yarn-v$YARN_VERSION.tar.gz" \
-	&& tar -xzf yarn.tar.gz -C /usr/local/bin/ \
+	&& tar -xzf yarn.tar.gz -C /opt/ \
 	&& rm yarn.tar.gz \
+	&& ln -s /opt/yarn-v${YARN_VERSION}/bin/yarn /usr/local/bin/yarn \
+	&& ln -s /opt/yarn-v${YARN_VERSION}/bin/yarnpkg /usr/local/bin/yarnpkg \
 	&& command -v yarn \
 	&& yarn --version | grep "$YARN_VERSION"
 
