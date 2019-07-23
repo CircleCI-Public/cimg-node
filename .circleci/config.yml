@@ -56,14 +56,14 @@ jobs:
           command: |
             source ./manifest
 
-            BRANCH=${CIRCLE_BRANCH:-master}
+            BRANCH=
 
             echo "$BRANCH"
 
             for version in "${versions[@]}"
             do
               curl -u ${CIRCLE_TOKEN}: -X POST --header "Content-Type: application/json" -d "{
-                \"branch\": \"${BRANCH}\",
+                \"branch\": \"${CIRCLE_BRANCH:-master}\",
                 \"parameters\": {
                   \"commit\": false,
                   \"build\": true,
