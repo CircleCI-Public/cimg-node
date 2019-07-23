@@ -108,7 +108,7 @@ jobs:
             done
 
       - save_cache:
-          paths: ~/project<<#parameters.variant>>/node<</parameters.variant>>
+          paths: ~/project
           key: <<parameters.language>>-dockerfiles<-{{ .Branch }}-{{ .Revision }}
 
       - persist_to_workspace:
