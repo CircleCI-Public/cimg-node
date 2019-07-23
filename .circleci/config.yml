@@ -138,6 +138,9 @@ dockerfiles: &dockerfiles
 publish-tags: &publish-tags
   latest<<#pipeline.parameters.monthly>>,<<pipeline.parameters.version>>-stable<</pipeline.parameters.monthly>>
 
+lint-ignore-rules: &lint-ignore-rules
+  SC2013,SC2027,SC2062,SC2086,SC2162
+
 workflows:
   monthly-cron-trigger:
     triggers:
@@ -164,6 +167,7 @@ workflows:
           attach-workspace: true
           workspace-root: ~/
           dockerfiles: *dockerfiles
+          ignore-rules: *lint-ignore-rules
           filters: *monthly-tag-jobs-filters
           requires: [prepare-dockerfiles-node-stable]
 
@@ -191,6 +195,7 @@ workflows:
           attach-workspace: true
           workspace-root: ~/
           dockerfiles: *dockerfiles
+          ignore-rules: *lint-ignore-rules
           filters: *dev-filters
           requires: [prepare-dockerfiles-node-ccitest]
 
@@ -215,6 +220,7 @@ workflows:
           attach-workspace: true
           workspace-root: ~/
           dockerfiles: *dockerfiles
+          ignore-rules: *lint-ignore-rules
           filters: *master-filters
           requires: [prepare-dockerfiles-node-edge]
 
