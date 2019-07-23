@@ -56,7 +56,9 @@ jobs:
           command: |
             source ./manifest
 
-            BRANCH="${CIRCLE_BRANCH:-master}"
+            BRANCH=${CIRCLE_BRANCH:-master}
+
+            echo "$BRANCH"
 
             for version in "${versions[@]}"
             do
