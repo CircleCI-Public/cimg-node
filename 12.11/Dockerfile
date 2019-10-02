@@ -4,7 +4,7 @@ FROM cimg/base:2019.10
 
 LABEL maintainer="CircleCI Community & Partner Engineering Team <community-partner@circleci.com>"
 
-ENV NODE_VERSION 12.11.0
+ENV NODE_VERSION 12.11.1
 
 RUN curl -L -o node.tar.xz "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz" && \
 	tar -xJf node.tar.xz -C /usr/local --strip-components=1 && \
