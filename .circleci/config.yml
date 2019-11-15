@@ -9,13 +9,10 @@ workflows:
 jobs:
   build:
     docker:
-      - image: cibuilds/docker:18.09
+      - image: cibuilds/docker:19.03
     steps:
       - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
-      # temp until a custom docker image with Bash is built
-      - run: apk add --update --no-cache bash
+      - setup_remote_docker
       - run:
           name: "Build Docker Images"
           command: ./build-images.sh
@@ -23,6 +20,14 @@ jobs:
           name: "Publish Docker Images (master branch only)"
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              
               echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-              docker push cimg/node
+              
+              # an else block will be added in the future for a staging release
+              if git log -1 --pretty=%s | grep "\[release\]"; then
+                echo "Publishing cimg/node to Docker Hub production."
+                docker push cimg/node
+              else
+                echo "Skipping publishing."
+              fi
             fi
