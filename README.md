@@ -139,6 +139,8 @@ To make a proper release for this image, lets's use the fake Node version of Nod
 ```
 
 This will automatically create a new Git branch, generate the Dockerfile(s), stage the changes, commit them, and push them to GitHub.
+The commit message will end with the string `[release]`.
+This string is used by CircleCI to know when to push images to Docker Hub.
 All that would need to be done after that is:
 
 - wait for build to pass on CircleCI
