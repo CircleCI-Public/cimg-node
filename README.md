@@ -1,8 +1,8 @@
 <div align="center">
 	<p>
-		<img alt="CircleCI Logo" src="img/circle-circleci.svg" width="75" />
-		<img alt="Docker Logo" src="img/circle-docker.svg" width="75" />
-		<img alt="Node.js Logo" src="img/circle-nodejs.svg" width="75" />
+		<img alt="CircleCI Logo" src="https://raw.github.com/CircleCI-Public/cimg-node/master/img/circle-circleci.svg?sanitize=true" width="75" />
+		<img alt="Docker Logo" src="https://raw.github.com/CircleCI-Public/cimg-node/master/img/circle-docker.svg?sanitize=true" width="75" />
+		<img alt="Node.js Logo" src="https://raw.github.com/CircleCI-Public/cimg-node/master/img/circle-nodejs.svg?sanitize=true" width="75" />
 	</p>
 	<h1>CircleCI Convenience Images => Node.js</h1>
 	<h3>A Continous Integration focused Node.js Docker image built to run on CircleCI</h3>
