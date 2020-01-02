@@ -1,6 +1,6 @@
 # vim:set ft=dockerfile:
 
-FROM cimg/%%PARENT%%:2019.11
+FROM cimg/%%PARENT%%:2020.01
 
 LABEL maintainer="CircleCI Community & Partner Engineering Team <community-partner@circleci.com>"
 
