@@ -35,14 +35,14 @@ For example:
 jobs:
   build:
     docker:
-      - image: cimg/node:12.6
+      - image: cimg/node:12.16
     steps:
       - checkout
       - run: node --version
 ```
 
 In the above example, the CircleCI Node.js Docker image is used for the primary container.
-More specifically, the tag `12.6` is used meaning the version of Node.js will be Node.js v12.6.x where 'x' is the latest patch release.
+More specifically, the tag `12.16` is used meaning the version of Node.js will be Node.js v12.16.x where 'x' is the latest patch release.
 You can now use Node.js within the steps for this job.
 
 
@@ -60,7 +60,10 @@ cimg/node:<node-version>
 ```
 
 `<node-version>` - The version of Node.js to use.
-This can be a full SemVer point release (such as `10.16.3`) or just the minor release (such as `12.6`).
+This can be a full SemVer point release (such as `10.16.3`), or just the minor release (such as `12.6`), or a version alias.
+This Node.js image has two version aliases, "current" and "lts".
+This aliases will always point to the latest "current" and latest "lts" releases that Node.js has as according to [their website](https://nodejs.org/en/).
+Keep in mind that using an alias tag will be less stable that specifying a full SemVer version.
 If you use the minor release tag, it will automatically point to future patch updates as they are released by Node.js.
 For example, the tag `12.6` points to Node.js v12.6.0 now, but when the next release comes out, it will point to Node.js v12.6.1.
 
@@ -102,19 +105,19 @@ git clone --recurse-submodules git@github.com:CircleCI-Public/cimg-node.git
 ### Generating Dockerfiles
 
 Dockerfiles can be generated for a specific Node.js version using the `gen-dockerfiles.sh` script.
-For example, to generate the Dockerfile for Node.js v12.6, you would run the following from the root of the repo:
+For example, to generate the Dockerfile for Node.js v12.16, you would run the following from the root of the repo:
 
 ```bash
-./shared/gen-dockerfiles.sh 12.6
+./shared/gen-dockerfiles.sh 12.16.3=lts
 ```
 
-The generated Dockerfile will be located at `./12.6/Dockefile`.
+The generated Dockerfile will be located at `./12.16/Dockefile`.
 To build this image locally and try it out, you can run the following:
 
 ```bash
-cd 12.6
-docker build -t test/node:12.6 .
-docker run -it test/node:12.6 bash
+cd 12.16
+docker build -t test/node:12.16.3 .
+docker run -it test/node:12.16.3 bash
 ```
 
 ### Building the Dockerfiles
@@ -135,12 +138,13 @@ A release script is included to make this process easier.
 To make a proper release for this image, lets's use the fake Node version of Node v9.99, you would run the following from the repo root:
 
 ```bash
-./shared/release.sh 9.99
+./shared/release.sh 9.99=alias
 ```
 
 This will automatically create a new Git branch, generate the Dockerfile(s), stage the changes, commit them, and push them to GitHub.
 The commit message will end with the string `[release]`.
 This string is used by CircleCI to know when to push images to Docker Hub.
+"alias" would be "current" or "lts" depending on the version.
 All that would need to be done after that is:
 
 - wait for build to pass on CircleCI
