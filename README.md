@@ -10,10 +10,10 @@
 
 [![CircleCI Build Status](https://circleci.com/gh/CircleCI-Public/cimg-node.svg?style=shield)](https://circleci.com/gh/CircleCI-Public/cimg-node) [![Software License](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/CircleCI-Public/cimg-node/master/LICENSE) [![Docker Pulls](https://img.shields.io/docker/pulls/cimg/node)](https://hub.docker.com/r/cimg/node) [![CircleCI Community](https://img.shields.io/badge/community-CircleCI%20Discuss-343434.svg)](https://discuss.circleci.com/c/ecosystem/circleci-images)
 
-***This image is in beta and is designed to supercede the original CircleCI Node.js image, `circleci/node`.***
+***This image is designed to supercede the legacy CircleCI Node.js image, `circleci/node`.***
 
 `cimg/node` is a Docker image created by CircleCI with continuous integration builds in mind.
-Each tag contains a version of Node.js, `npm`, `yarn`, and any binaries and tools that are required for builds to complete successfully in a CircleCI environment.
+Each tag contains a version of Node.js, `npm`, `yarn v1`, and any binaries and tools that are required for builds to complete successfully in a CircleCI environment.
 
 
 ## Table of Contents
