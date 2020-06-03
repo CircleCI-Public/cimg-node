@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-docker build --file 12.17/Dockerfile -t cimg/node:12.17.0  -t cimg/node:12.17 .
+docker build --file 14.4/Dockerfile -t cimg/node:14.4.0  -t cimg/node:14.4  -t cimg/node:current .
