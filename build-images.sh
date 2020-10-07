@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-docker build --file 12.19/Dockerfile -t cimg/node:12.19.0  -t cimg/node:12.19  -t cimg/node:lts .
+docker build --file 14.13/Dockerfile -t cimg/node:14.13.1  -t cimg/node:14.13  -t cimg/node:current .
