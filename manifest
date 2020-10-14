@@ -2,4 +2,4 @@
 
 repository=node
 parent=base
-variants=()
+variants=(browsers)
