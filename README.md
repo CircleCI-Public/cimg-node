@@ -42,7 +42,7 @@ jobs:
 ```
 
 In the above example, the CircleCI Node.js Docker image is used for the primary container.
-More specifically, the tag `12.16` is used meaning the version of Node.js will be Node.js v12.16.x where 'x' is the latest patch release.
+More specifically, the tag `12.16` is used meaning the version of Node.js will be Node.js v12.16.
 You can now use Node.js within the steps for this job.
 
 
