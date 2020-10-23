@@ -35,14 +35,14 @@ For example:
 jobs:
   build:
     docker:
-      - image: cimg/node:12.16
+      - image: cimg/node:15.0.1
     steps:
       - checkout
       - run: node --version
 ```
 
 In the above example, the CircleCI Node.js Docker image is used for the primary container.
-More specifically, the tag `12.16` is used meaning the version of Node.js will be Node.js v12.16.
+More specifically, the tag `15.0.1` is used meaning the version of Node.js will be Node.js v15.0.1.
 You can now use Node.js within the steps for this job.
 
 
