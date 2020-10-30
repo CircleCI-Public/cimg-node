@@ -51,6 +51,35 @@ You can now use Node.js within the steps for this job.
 This image contains the Node.js programming language and its package managers.
 This includes `npm` and `yarn`.
 
+### Variants
+
+Variant images typically contain the same base software, but with a few additional modifications.
+
+#### Browsers
+
+**The browsers variants are currently in beta. Please feel free to contribute to the conversation [here](https://discuss.circleci.com/t/next-gen-convenience-image-browsers-variant-beta/37794).**
+
+The browsers variant is the same Node.js image but with Java, Selenium, and browser dependencies pre-installed via apt.
+The browsers variant can be used by appending `-browser` to the end of an existing `cimg/node` tag.
+The browsers variant is designed to work in conjunction with the [CircleCI Browser Tools orb](https://circleci.com/developer/orbs/orb/circleci/browser-tools).
+You can use the orb to install a version of Google Chrome and/or Firefox into your build. The image contains all of the supporting tools needed to use both the browser and its driver.
+
+```yaml
+orbs:
+  browser-tools: circleci/browser-tools@1.1.0
+jobs:
+  build:
+    docker:
+      - image: cimg/node:15.0.1-browsers
+    steps:
+      - browser-tools/install-browsers
+      - checkout
+      - run: |
+          node --version
+          java --version
+          google-chome --version
+```
+
 ### Tagging Scheme
 
 This image has the following tagging scheme:
