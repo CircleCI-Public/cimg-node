@@ -17,6 +17,14 @@ RUN curl -sSL -o selenium-server-standalone-${SELENIUM_VER}.jar "https://seleniu
     rm selenium-server-standalone-${SELENIUM_VER}.jar
 
 RUN sudo apt-get update && \
+
+    # Install Java only if it's not already available
+    # Java is installed for Selenium
+    if ! command -v java > /dev/null; then \
+        echo "Java not found in parent image, installing..." && \
+        sudo apt-get install -y --no-install-recommends --no-upgrade openjdk-11-jre; \
+    fi && \
+
     # Firefox deps
     sudo apt-get install -y --no-install-recommends --no-upgrade \
 		libdbus-glib-1-2 \
@@ -39,8 +47,7 @@ RUN sudo apt-get update && \
         libpango-1.0-0 \
         libpangocairo-1.0-0 \
         libxcursor1 \
-        # java for selenium
-        openjdk-11-jre \
+		libxss1 \
         xdg-utils \
 		xvfb \
 	&& \
