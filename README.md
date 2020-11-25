@@ -15,7 +15,6 @@
 `cimg/node` is a Docker image created by CircleCI with continuous integration builds in mind.
 Each tag contains a version of Node.js, `npm`, `yarn v1`, and any binaries and tools that are required for builds to complete successfully in a CircleCI environment.
 
-
 ## Table of Contents
 
 - [Getting Started](#getting-started)
@@ -24,7 +23,6 @@ Each tag contains a version of Node.js, `npm`, `yarn v1`, and any binaries and t
 - [Contributing](#contributing)
 - [Additional Resources](#additional-resources)
 - [License](#license)
-
 
 ## Getting Started
 
@@ -44,7 +42,6 @@ jobs:
 In the above example, the CircleCI Node.js Docker image is used for the primary container.
 More specifically, the tag `15.0.1` is used meaning the version of Node.js will be Node.js v15.0.1.
 You can now use Node.js within the steps for this job.
-
 
 ## How This Image Works
 
@@ -84,7 +81,7 @@ jobs:
 
 This image has the following tagging scheme:
 
-```
+```text
 cimg/node:<node-version>
 ```
 
@@ -208,7 +205,6 @@ This will create a new Dockerfile and once published, a new image.
 **Node specific changes** - Editing the `Dockerfile.template` file in this repo is how to modify the Node.js image specifically.
 Don't forget that to see any of these changes locally, the `gen-dockerfiles.sh` script will need to be run again (see above).
 
-
 ## Contributing
 
 We encourage [issues](https://github.com/CircleCI-Public/cimg-node/issues) to and [pull requests](https://github.com/CircleCI-Public/cimg-node/pulls) against this repository however, in order to value your time, here are some things to consider:
@@ -217,14 +213,12 @@ We encourage [issues](https://github.com/CircleCI-Public/cimg-node/issues) to an
 1. PRs are welcome. If you have a PR that will potentially take a large amount of time to make, it will be better to open an issue to discuss it first to make sure it's something worth investing the time in.
 1. Issues should be to report bugs or request additional/removal of tools in this image. For help with images, please visit [CircleCI Discuss](https://discuss.circleci.com/c/ecosystem/circleci-images).
 
-
 ## Additional Resources
 
 [CircleCI Docs](https://circleci.com/docs/) - The official CircleCI Documentation website.  
 [CircleCI Configuration Reference](https://circleci.com/docs/2.0/configuration-reference/#section=configuration) - From CircleCI Docs, the configuration reference page is one of the most useful pages we have.
 It will list all of the keys and values supported in `.circleci/config.yml`.  
 [Docker Docs](https://docs.docker.com/) - For simple projects this won't be needed but if you want to dive deeper into learning Docker, this is a great resource.  
-
 
 ## License
 
