@@ -72,12 +72,12 @@ jobs:
     docker:
       - image: cimg/node:15.0.1-browsers
     steps:
-      - browser-tools/install-browsers
+      - browser-tools/install-browser-tools
       - checkout
       - run: |
           node --version
           java --version
-          google-chome --version
+          google-chrome --version
 ```
 
 ### Tagging Scheme
