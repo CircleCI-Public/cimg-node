@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
 
-docker build --file 12.22/Dockerfile -t cimg/node:12.22.0  -t cimg/node:12.22 .
-docker build --file 12.22/browsers/Dockerfile -t cimg/node:12.22.0-browsers  -t cimg/node:12.22-browsers .
+
+docker build --file 15.12/Dockerfile -t cimg/node:15.12.0  -t cimg/node:15.12  -t cimg/node:current .
+docker build --file 15.12/browsers/Dockerfile -t cimg/node:15.12.0-browsers  -t cimg/node:15.12-browsers  -t cimg/node:current-browsers .
