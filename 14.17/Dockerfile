@@ -1,10 +1,10 @@
 # vim:set ft=dockerfile:
 
-FROM cimg/base:2021.04
+FROM cimg/base:2021.07
 
 LABEL maintainer="Community & Partner Engineering Team <community-partner@circleci.com>"
 
-ENV NODE_VERSION 14.17.1
+ENV NODE_VERSION 14.17.2
 
 RUN curl -L -o node.tar.xz "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz" && \
 	sudo tar -xJf node.tar.xz -C /usr/local --strip-components=1 && \
