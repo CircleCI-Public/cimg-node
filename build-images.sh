@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-docker build --file 14.18/Dockerfile -t cimg/node:14.18.0  -t cimg/node:14.18  -t cimg/node:lts .
-docker build --file 14.18/browsers/Dockerfile -t cimg/node:14.18.0-browsers  -t cimg/node:14.18-browsers  -t cimg/node:lts-browsers .
+docker build --file 16.11/Dockerfile -t cimg/node:16.11.0  -t cimg/node:16.11  -t cimg/node:current .
+docker build --file 16.11/browsers/Dockerfile -t cimg/node:16.11.0-browsers  -t cimg/node:16.11-browsers  -t cimg/node:current-browsers .
