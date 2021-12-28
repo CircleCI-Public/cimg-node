@@ -13,7 +13,7 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker:
-          version: 20.10.11
+          version: "20.10.11"
       - run:
           name: "Build Docker Images"
           command: |
@@ -22,6 +22,7 @@ jobs:
       - deploy:
           name: "Publish Docker Images (master branch only)"
           command: |
+            ./check-versions.sh
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
               
               echo $DOCKER_TOKEN | docker login -u $DOCKER_USER --password-stdin
