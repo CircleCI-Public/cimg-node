@@ -9,10 +9,11 @@ workflows:
 jobs:
   build:
     docker:
-      - image: cibuilds/docker:19.03
+      - image: cimg/base:2021.10
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          version: 20.10.11
       - run:
           name: "Build Docker Images"
           command: |
@@ -29,6 +30,7 @@ jobs:
               if git log -1 --pretty=%s | grep "\[release\]"; then
                 echo "Publishing cimg/node to Docker Hub production."
                 docker push cimg/node
+                ./push-images.sh
               else
                 echo "Skipping publishing."
               fi
