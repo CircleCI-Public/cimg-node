@@ -13,10 +13,11 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker:
-          version: 20.10.11
+          version: "20.10.11"
       - run:
           name: "Build Docker Images"
           command: |
+            ./check-versions.sh
             ./build-images.sh
             echo 'export DOCKER_PASS=$DOCKER_TOKEN' >> $BASH_ENV
       - deploy:
