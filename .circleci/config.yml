@@ -17,12 +17,12 @@ jobs:
       - run:
           name: "Build Docker Images"
           command: |
+            ./check-versions.sh
             ./build-images.sh
             echo 'export DOCKER_PASS=$DOCKER_TOKEN' >> $BASH_ENV
       - deploy:
           name: "Publish Docker Images (master branch only)"
           command: |
-            ./check-versions.sh
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
               
               echo $DOCKER_TOKEN | docker login -u $DOCKER_USER --password-stdin
