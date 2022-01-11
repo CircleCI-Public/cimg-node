@@ -19,5 +19,7 @@ docker push cimg/node:lts-browsers
 
 docker push cimg/node:17.3.1
 docker push cimg/node:17.3
+docker push cimg/node:current
 docker push cimg/node:17.3.1-browsers
 docker push cimg/node:17.3-browsers
+docker push cimg/node:current-browsers
