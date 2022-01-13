@@ -3,3 +3,4 @@
 repository=node
 parent=base
 variants=(browsers)
+namespace=cimg
