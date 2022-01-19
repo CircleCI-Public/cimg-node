@@ -1,8 +1,8 @@
 <div align="center">
 	<p>
-		<img alt="CircleCI Logo" src="https://raw.github.com/CircleCI-Public/cimg-node/master/img/circle-circleci.svg?sanitize=true" width="75" />
-		<img alt="Docker Logo" src="https://raw.github.com/CircleCI-Public/cimg-node/master/img/circle-docker.svg?sanitize=true" width="75" />
-		<img alt="Node.js Logo" src="https://raw.github.com/CircleCI-Public/cimg-node/master/img/circle-nodejs.svg?sanitize=true" width="75" />
+		<img alt="CircleCI Logo" src="https://raw.github.com/CircleCI-Public/cimg-node/main/img/circle-circleci.svg?sanitize=true" width="75" />
+		<img alt="Docker Logo" src="https://raw.github.com/CircleCI-Public/cimg-node/main/img/circle-docker.svg?sanitize=true" width="75" />
+		<img alt="Node.js Logo" src="https://raw.github.com/CircleCI-Public/cimg-node/main/img/circle-nodejs.svg?sanitize=true" width="75" />
 	</p>
 	<h1>CircleCI Convenience Images => Node.js</h1>
 	<h3>A Continous Integration focused Node.js Docker image built to run on CircleCI</h3>
@@ -175,7 +175,7 @@ All that would need to be done after that is:
 - review the PR
 - merge the PR
 
-The master branch build will then publish a release.
+The main branch build will then publish a release.
 
 ### Incorporating Changes
 
