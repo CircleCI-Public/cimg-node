@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  sonar: hubci/sonar@1.0.0
+
 workflows:
   main:
     jobs:
@@ -34,12 +37,12 @@ jobs:
               else
                 echo "Skipping publishing."
               fi
-
-              # Update the Docker Hub description
-              SONAR_VER=0.15.0
-              SONAR_URL="https://github.com/felicianotech/sonar/releases/download/v${SONAR_VER}/sonar-v${SONAR_VER}-linux-amd64.tar.gz"
-              mkdir -p $HOME/bin
-              curl -sSL $SONAR_URL | tar -xz -C $HOME/bin sonar
-
-              sonar set description cimg/node ./README.md
             fi
+      - when:
+          condition:
+            equal: [main, << pipeline.git.branch >>]
+          steps:
+            - sonar/install:
+                version: "0.15.0"
+            - sonar/update-readme:
+                image: cimg/node
