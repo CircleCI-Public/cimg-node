@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
+# Do not edit by hand; please use build scripts/templates to make changes
 
-docker push cimg/node:17.4.0
-docker push cimg/node:17.4
-docker push cimg/node:current
-docker push cimg/node:17.4.0-browsers
-docker push cimg/node:17.4-browsers
-docker push cimg/node:current-browsers
+docker push cimg/node:14.19.0
+docker push cimg/node:14.19
+docker push cimg/node:14.19.0-browsers
+docker push cimg/node:14.19-browsers
