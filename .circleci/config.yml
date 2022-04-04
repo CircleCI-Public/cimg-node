@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   sonar: hubci/sonar@1.0.0
-  cimg-orb: circleci/cimg-orb@dev:769e94ae34c1bde1318d074e7a553d66a8cefd78
+  cimg-orb: circleci/cimg-orb@dev:alpha
 
 jobs:
   build:
@@ -11,17 +11,6 @@ jobs:
     steps:
       - cimg-orb/build-and-deploy:
           run-script: 'build-images.sh check-versions.sh'
-      - run:
-          name: checking
-          command: |
-            cat './build-images.sh'
-            cat './check-versions.sh'
-            echo "${ORB_SCRIPT_DIRECTORY} directory"
-            echo "${ORB_PARAM_SCRIPTS} scripts}"
-            echo "${ORB_SCRIPTS[@]} scripts2"
-            echo <<parameters.image>>
-            echo <<parameters.tag>>
-
 workflows:
   main:
     jobs:
