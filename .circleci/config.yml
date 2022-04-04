@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   sonar: hubci/sonar@1.0.0
+  cimg-orb: cimg-orb@dev:2e878e0ed7a17c7ae70142e27a967c2fae7c2ba8
 
 workflows:
   main:
@@ -11,38 +12,9 @@ workflows:
 
 jobs:
   build:
-    docker:
-      - image: cimg/base:2022.01
+    executor: default
     steps:
-      - checkout
-      - setup_remote_docker:
-          version: "20.10.11"
-      - run:
-          name: "Build Docker Images"
-          command: |
-            ./check-versions.sh
-            ./build-images.sh
-            echo 'export DOCKER_PASS=$DOCKER_TOKEN' >> $BASH_ENV
-      - deploy:
-          name: "Publish Docker Images (main branch only)"
-          command: |
-            if [ "${CIRCLE_BRANCH}" == "main" ]; then
-              
-              echo $DOCKER_TOKEN | docker login -u $DOCKER_USER --password-stdin
-              
-              # an else block will be added in the future for a staging release
-              if git log -1 --pretty=%s | grep "\[release\]"; then
-                echo "Publishing cimg/node to Docker Hub production."
-                ./push-images.sh
-              else
-                echo "Skipping publishing."
-              fi
-            fi
-      - when:
-          condition:
-            equal: [main, << pipeline.git.branch >>]
-          steps:
-            - sonar/install:
-                version: "0.15.0"
-            - sonar/update-readme:
-                image: cimg/node
+      - cimg-orb/build-and-deploy:
+    parameters:
+      run-script: 'build-images.sh check-versions.sh'
+      image: node
