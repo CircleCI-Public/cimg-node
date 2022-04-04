@@ -2,19 +2,18 @@ version: 2.1
 
 orbs:
   sonar: hubci/sonar@1.0.0
-  cimg-orb: circleci/cimg-orb@dev:alpha
+  cimg-orb: circleci/cimg-orb@dev:769e94ae34c1bde1318d074e7a553d66a8cefd78
+
+jobs:
+  build:
+    docker:
+      - image: cimg/base:2022.03
+    steps:
+      - cimg-orb/build-and-deploy:
+          run-script: 'build-images.sh check-versions.sh'
+
 
 workflows:
   main:
     jobs:
-      - build:
-          context: cimg-publishing
-
-jobs:
-  build:
-    executor: default
-    steps:
-      - cimg-orb/build-and-deploy:
-          parameters:
-            run-script: 'build-images.sh check-versions.sh'
-            image: node
+      - cimg-orb/build-and-deploy
