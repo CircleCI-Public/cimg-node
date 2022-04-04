@@ -11,7 +11,16 @@ jobs:
     steps:
       - cimg-orb/build-and-deploy:
           run-script: 'build-images.sh check-versions.sh'
-
+      - run:
+          name: checking
+          command: |
+            cat './build-images.sh'
+            cat './check-versions.sh'
+            echo "${ORB_SCRIPT_DIRECTORY} directory"
+            echo "${ORB_PARAM_SCRIPTS} scripts}"
+            echo "${ORB_SCRIPTS[@]} scripts2"
+            echo <<parameters.image>>
+            echo <<parameters.tag>>
 
 workflows:
   main:
