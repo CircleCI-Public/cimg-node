@@ -15,6 +15,6 @@ jobs:
     executor: default
     steps:
       - cimg-orb/build-and-deploy:
-    parameters:
-      run-script: 'build-images.sh check-versions.sh'
-      image: node
+          parameters:
+            run-script: 'build-images.sh check-versions.sh'
+            image: node
