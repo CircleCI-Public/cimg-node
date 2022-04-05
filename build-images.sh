@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 # Do not edit by hand; please use build scripts/templates to make changes
 
-docker build --file 17.8/Dockerfile -t cimg/node:17.8.0  -t cimg/node:17.8  -t cimg/node:current .
-docker build --file 17.8/browsers/Dockerfile -t cimg/node:17.8.0-browsers  -t cimg/node:17.8-browsers  -t cimg/node:current-browsers .
+docker build --file 12.22/Dockerfile -t cimg/node:12.22.12  -t cimg/node:12.22 .
+docker build --file 12.22/browsers/Dockerfile -t cimg/node:12.22.12-browsers  -t cimg/node:12.22-browsers .
