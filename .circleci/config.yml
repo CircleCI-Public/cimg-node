@@ -15,4 +15,4 @@ workflows:
   main:
     jobs:
       - cimg-orb/build-and-deploy:
-          image: cimg/node
+          image: cimg/node:current
