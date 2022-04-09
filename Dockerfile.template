@@ -13,8 +13,7 @@ ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:/home/circleci/.yarn/bin:$PAT
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash && \
 	echo '\. "$NVM_DIR/nvm.sh" --no-use' >> ~/.bashrc
 
-ENV YARN_VERSION 1.22.17
-
+ENV YARN_VERSION 1.22.18
 RUN curl -L -o yarn.tar.gz "https://yarnpkg.com/downloads/${YARN_VERSION}/yarn-v${YARN_VERSION}.tar.gz" && \
 	sudo tar -xzf yarn.tar.gz -C /opt/ && \
 	rm yarn.tar.gz && \
