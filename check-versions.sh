@@ -4,7 +4,7 @@ source ./ALIASES
 currentLTS=${lts}
 currentVersion=${current}
 
-git restore ALIASES --source=master
+git restore ALIASES --source=main
 prevLTS=$(grep 'lts' ALIASES | cut -d "=" -f2)
 prevVersion=$(grep 'current' ALIASES | cut -d "=" -f2)
 
