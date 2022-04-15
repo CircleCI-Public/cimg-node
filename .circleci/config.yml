@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   sonar: hubci/sonar@1.0.0
-  cimg-orb: circleci/cimg-orb@0.0.2
+  cimg-orb: circleci/cimg-orb@dev:alpha
 
 workflows:
   main:
