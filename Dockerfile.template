@@ -13,8 +13,8 @@ RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | b
 	echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.bashrc && \
 	echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" --no-use' >> ~/.bashrc && \
 	echo 'nvm use default' >> ~/.bashrc && \
-	sudo ln -s "$NVM_DIR/versions/node/$(nvm version)/bin/node" "/usr/local/bin/node" && \
-	sudo ln -s "$NVM_DIR/versions/node/$(nvm version)/bin/npm" "/usr/local/bin/npm"
+ 	echo 'sudo ln -sf $NVM_DIR/versions/node/$(nvm version)/bin/node /usr/local/bin/node' >> ~/.bashrc && \
+	echo 'sudo ln -sf $NVM_DIR/versions/node/$(nvm version)/bin/npm /usr/local/bin/npm' >> ~/.bashrc
 
 ENV YARN_VERSION 1.22.18
 RUN curl -L -o yarn.tar.gz "https://yarnpkg.com/downloads/${YARN_VERSION}/yarn-v${YARN_VERSION}.tar.gz" && \
