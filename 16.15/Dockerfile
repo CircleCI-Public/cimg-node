@@ -6,7 +6,7 @@ FROM cimg/base:2022.04
 
 LABEL maintainer="Community & Partner Engineering Team <community-partner@circleci.com>"
 
-ENV NODE_VER 16.15.0
+ENV NODE_VERSION 16.15.0
 ENV NVM_DIR /home/circleci/.nvm
 
 # Next two lines should be moved to cimg/base
@@ -18,7 +18,7 @@ RUN touch /home/circleci/.circlerc && \
 	echo -e ". /home/circleci/.circlerc\n$( cat ~/.bashrc )" > ~/.bashrc && \
 	command -v nvm
 
-ENV YARN_VER 1.22.18
+ENV YARN_VERSION 1.22.18
 RUN curl -L -o yarn.tar.gz "https://yarnpkg.com/downloads/${YARN_VER}/yarn-v${YARN_VER}.tar.gz" && \
 	sudo tar -xzf yarn.tar.gz -C /opt/ && \
 	rm yarn.tar.gz && \
