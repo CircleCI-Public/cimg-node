@@ -8,13 +8,10 @@ LABEL maintainer="Community & Partner Engineering Team <community-partner@circle
 
 ENV NODE_VERSION 18.1.0
 ENV NVM_DIR /home/circleci/.nvm
+ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:/home/circleci/.yarn/bin:$PATH
 
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash && \
-	echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.bashrc && \
-	echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" --no-use' >> ~/.bashrc && \
-	echo 'nvm use default' >> ~/.bashrc && \
-	sudo ln -s "$NVM_DIR/versions/node/$(nvm version)/bin/node" "/usr/local/bin/node" && \
-	sudo ln -s "$NVM_DIR/versions/node/$(nvm version)/bin/npm" "/usr/local/bin/npm"
+	echo '\. "$NVM_DIR/nvm.sh" --no-use' >> ~/.bashrc
 
 ENV YARN_VERSION 1.22.18
 RUN curl -L -o yarn.tar.gz "https://yarnpkg.com/downloads/${YARN_VERSION}/yarn-v${YARN_VERSION}.tar.gz" && \
