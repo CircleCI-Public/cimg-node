@@ -13,4 +13,4 @@ docker push cimg/node:18.1
 docker push cimg/node:current
 docker push cimg/node:18.1.0-browsers
 docker push cimg/node:18.1-browsers
-docker push cimg/node:current-browsers
+docker push cimg/node:current-browsers 
