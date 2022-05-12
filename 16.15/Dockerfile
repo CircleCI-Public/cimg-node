@@ -14,7 +14,7 @@ ENV BASH_ENV /home/circleci/.circlerc
 RUN touch /home/circleci/.circlerc && \
 	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash && \
 	echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> ~/.circlerc && \
-	source ~/.circlerc && nvm install $NODE_VER && \
+	source ~/.circlerc && nvm install $NODE_VERSION && \
 	echo -e ". /home/circleci/.circlerc\n$( cat ~/.bashrc )" > ~/.bashrc && \
 	command -v nvm
 
