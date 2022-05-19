@@ -23,13 +23,16 @@ jobs:
             ./check-versions.sh
             ./build-images.sh
             echo 'export DOCKER_PASS=$DOCKER_TOKEN' >> $BASH_ENV
+      - run:
+          name: Test Node Images
+          command: ./test-node.sh
       - deploy:
           name: "Publish Docker Images (main branch only)"
           command: |
             if [ "${CIRCLE_BRANCH}" == "main" ]; then
-              
+
               echo $DOCKER_TOKEN | docker login -u $DOCKER_USER --password-stdin
-              
+
               # an else block will be added in the future for a staging release
               if git log -1 --pretty=%s | grep "\[release\]"; then
                 echo "Publishing cimg/node to Docker Hub production."
