@@ -6,7 +6,7 @@ FROM cimg/base:2022.04
 
 LABEL maintainer="Community & Partner Engineering Team <community-partner@circleci.com>"
 
-ENV NODE_VERSION 17.9.1
+ENV NODE_VERSION 18.3.0
 ENV NVM_DIR /home/circleci/.nvm
 
 # Next two lines should be moved to cimg/base
