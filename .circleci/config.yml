@@ -7,7 +7,9 @@ workflows:
   main:
     jobs:
       - build:
-          context: cimg-publishing
+          context:
+            - cimg-publishing
+
 
 jobs:
   build:
@@ -17,6 +19,17 @@ jobs:
       - checkout
       - setup_remote_docker:
           version: "20.10.11"
+      - run:
+          name: "Test User Input with Expected Script Output"
+          command: |
+            git clone https://github.com/CircleCI-Public/cimg-shared
+            mkdir -p shared
+            cd cimg-shared
+            git fetch
+            git checkout c11b28cd9386bff96fb68494df5f73411e0e6fdd
+            cd ..
+            mv cimg-shared/* shared/
+            chmod +x check-diff.sh && ./check-diff.sh
       - run:
           name: "Build Docker Images"
           command: |
