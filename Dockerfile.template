@@ -1,3 +1,4 @@
+# syntax=docker.io/docker/dockerfile:1.4
 # vim:set ft=dockerfile:
 
 # Do not edit individual Dockerfiles manually. Instead, please make changes to the Dockerfile.template, which will be used by the build script to generate Dockerfiles.
@@ -12,9 +13,22 @@ ENV NVM_DIR /home/circleci/.nvm
 # Next two lines should be moved to cimg/base
 ENV BASH_ENV /home/circleci/.circlerc
 RUN touch /home/circleci/.circlerc && \
-	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash && \
-	echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> ~/.circlerc && \
-	source ~/.circlerc && nvm install $NODE_VERSION && \
+	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+
+RUN cat <<eot >> ~/.circlerc
+	if [ -n "$PREFIX" ]; then
+		echo 'NVM has not been initialized due to the PREFIX environment variable being set. 
+The variable has been unset and a workaround would be to set export PREFIX as CUSTOM_PREFIX in the specific run step'
+	  unset PREFIX
+	else
+		command -v nvm
+	fi
+eot
+
+# nvm automatically installs the version specified in NODE_VERSION
+RUN echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> ~/.circlerc && \
+	source ~/.circlerc && \ 
+	nvm install $NODE_VERSION && \
 	echo -e ". /home/circleci/.circlerc\n$( cat ~/.bashrc )" > ~/.bashrc && \
 	command -v nvm
 
