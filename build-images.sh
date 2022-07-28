@@ -3,3 +3,9 @@
 
 docker build --file 14.20/Dockerfile -t cimg/node:14.20.0 -t cimg/node:14.20 .
 docker build --file 14.20/browsers/Dockerfile -t cimg/node:14.20.0-browsers -t cimg/node:14.20-browsers .
+docker build --file 18.5/Dockerfile -t cimg/node:18.5.0 -t cimg/node:18.5 .
+docker build --file 18.5/browsers/Dockerfile -t cimg/node:18.5.0-browsers -t cimg/node:18.5-browsers .
+docker build --file 18.6/Dockerfile -t cimg/node:18.6.0 -t cimg/node:18.6 .
+docker build --file 18.6/browsers/Dockerfile -t cimg/node:18.6.0-browsers -t cimg/node:18.6-browsers .
+docker build --file 18.7/Dockerfile -t cimg/node:18.7.0 -t cimg/node:18.7 .
+docker build --file 18.7/browsers/Dockerfile -t cimg/node:18.7.0-browsers -t cimg/node:18.7-browsers .
