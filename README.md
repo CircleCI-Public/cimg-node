@@ -48,6 +48,8 @@ You can now use Node.js within the steps for this job.
 This image contains the Node.js programming language and its package managers.
 This includes `npm` and `yarn`.
 
+There was a recent change reimplmenting vanilla node after briefly using nvm. While it is implied and recommended to not use `sudo` when possible, you will now need it when installing packages globally.
+
 ### Variants
 
 Variant images typically contain the same base software, but with a few additional modifications.
