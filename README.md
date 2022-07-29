@@ -43,8 +43,6 @@ In the above example, the CircleCI Node.js Docker image is used for the primary 
 More specifically, the tag `15.0.1` is used meaning the version of Node.js will be Node.js v15.0.1.
 You can now use Node.js within the steps for this job.
 
-We recommend not using `sudo` with npm as it is not best practice, not needed with this image, and would not work. e.g `npm install -g <packagename>` will yield the same results as running with sudo. Additionally, nvm works using shell and user modification for the default `circleci` user, however, this is not carried over to sudo or root
-
 ## How This Image Works
 
 This image contains the Node.js programming language and its package managers.
