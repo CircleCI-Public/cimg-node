@@ -23,4 +23,4 @@ RUN curl -L -o yarn.tar.gz "https://yarnpkg.com/downloads/${YARN_VERSION}/yarn-v
 	sudo ln -s /opt/yarn-v${YARN_VERSION}/bin/yarnpkg /usr/local/bin/yarnpkg
 
 # Install an alternative, but growing in popularity Node.js package manager
-RUN npm install -g pnpm
+RUN sudo npm install -g pnpm
