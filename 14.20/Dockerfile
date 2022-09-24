@@ -2,11 +2,11 @@
 
 # Do not edit individual Dockerfiles manually. Instead, please make changes to the Dockerfile.template, which will be used by the build script to generate Dockerfiles.
 
-FROM cimg/base:2022.06
+FROM cimg/base:2022.08
 
 LABEL maintainer="Community & Partner Engineering Team <community-partner@circleci.com>"
 
-ENV NODE_VERSION 14.20.0
+ENV NODE_VERSION 14.20.1
 
 RUN curl -L -o node.tar.xz "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz" && \
 	sudo tar -xJf node.tar.xz -C /usr/local --strip-components=1 && \
@@ -21,3 +21,6 @@ RUN curl -L -o yarn.tar.gz "https://yarnpkg.com/downloads/${YARN_VERSION}/yarn-v
 	rm yarn.tar.gz && \
 	sudo ln -s /opt/yarn-v${YARN_VERSION}/bin/yarn /usr/local/bin/yarn && \
 	sudo ln -s /opt/yarn-v${YARN_VERSION}/bin/yarnpkg /usr/local/bin/yarnpkg
+
+# Install an alternative, but growing in popularity Node.js package manager
+RUN sudo npm install -g pnpm
