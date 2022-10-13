@@ -24,3 +24,6 @@ workflows:
           context: cimg-publishing
           requires:
             - "Push to Staging"
+          filters:
+            branches:
+              only: main
