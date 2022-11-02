@@ -5,7 +5,9 @@
 # By policy, the base image tag should be a quarterly tag unless there's a 
 # specific reason to use a different one. This means January, April, July, or 
 # October.
-FROM cimg/base:2022.10
+
+# NOTE: This uses November due to an OpenSSL CVE fix. We will resume using quarterly versions of cimg-base in Q1
+FROM cimg/base:2022.11
 
 LABEL maintainer="Community & Partner Engineering Team <community-partner@circleci.com>"
 
