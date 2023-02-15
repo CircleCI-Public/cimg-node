@@ -3,24 +3,75 @@ version: 2.1
 orbs:
   cimg: circleci/cimg@0.3.0
 
+parameters:
+  cron:
+    type: boolean
+    default: false
+
 workflows:
-  main-wf:
+  automated-wf:
+    when: << pipeline.parameters.cron >>
     jobs:
-      - cimg/build-and-deploy:
-          name: "Staging"
-          docker-namespace: ccitest
-          docker-repository: node
-          publish-branch: test
-          filters:
-            branches:
-              ignore:
-                - main
-          context: cimg-publishing
-      - cimg/build-and-deploy:
-          name: "Deploy"
-          docker-repository: node
-          filters:
-            branches:
-              only:
-                - main
-          context: cimg-publishing
+      - check-feed:
+          context:
+            - image-publishing
+
+  main-wf:
+    when:
+      not: << pipeline.parameters.cron >>
+    jobs:
+      - build:
+          context:
+            - image-publishing
+
+jobs:
+  check-feed:
+    docker:
+      - image: cimg/base:2023.01
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "72:cf:87:0c:8b:0f:74:1c:e5:a2:ba:24:a6:a0:fe:76"
+      - run:
+          name: SSH config to pull app project
+          command: |
+            ssh-add -D
+            ssh-add ~/.ssh/id_rsa_72cf870c8b0f741ce5a2ba24a6a0fe76
+      - run:
+          name: git config
+          command: |
+            git config --global user.email "jeff.chen@circleci.com"
+            git config --global user.name "jalexbot"
+      - run:
+          name: Run script
+          command: |
+            sudo chmod +x nodeFeed.sh
+            ./nodeFeed.sh
+  build:
+    docker:
+      - image: cimg/base:2022.01
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: "20.10.18"
+      - run:
+          name: "Build Docker Images"
+          command: |
+            ./build-images.sh
+            echo 'export DOCKER_PASS=$DOCKER_TOKEN' >> $BASH_ENV
+      - deploy:
+          name: "Publish Docker Images (main branch only)"
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "main" ]; then
+
+              echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+
+              # an else block will be added in the future for a staging release
+              if git log -1 --pretty=%s | grep "\[release\]"; then
+                echo "Publishing ferriswh33l/node to Docker Hub production."
+                ./push-images.sh
+              else
+                echo "Skipping publishing."
+              fi
+            fi

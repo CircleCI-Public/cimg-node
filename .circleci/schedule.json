@@ -1,0 +1,14 @@
+{
+  "name": "Daily Check",
+  "description": "Kickoff a pipeline to create a PR if there is a new version.",
+  "parameters": {
+    "branch": "main",
+    "cron": true
+  },
+  "timetable": {
+    "per-hour": 1,
+    "hours-of-day": [18],
+    "days-of-week": ["MON", "TUE", "WED", "THU", "FRI"]
+  },
+  "attribution-actor": "system"
+}
