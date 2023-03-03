@@ -6,7 +6,11 @@
 # the browsers variant. The normal version is based on the node variant of that
 # image. As this IS a Node image, there isn't a node variant.
 
+<<<<<<< HEAD
 FROM cimg/node:19.8.1
+=======
+FROM cimg/node:19.8.0
+>>>>>>> add643e (feat: adds an automated workflow for updating versions)
 
 LABEL maintainer="CircleCI Community & Partner Engineering Team <community-partner@circleci.com>"
 
