@@ -79,7 +79,7 @@ jobs:
           name: Run version update script
           command: |
             git checkout -b testBranch
-            git commit --allow-empty -m "test with gpg"
+            git commit --allow-empty -m "test with gpg [skip ci]"
             git push -u origin testBranch
             # sudo chmod +x nodeFeed.sh
             # ./nodeFeed.sh
