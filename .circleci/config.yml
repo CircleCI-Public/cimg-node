@@ -63,8 +63,8 @@ jobs:
               echo password=$IMAGE_BOT_TOKEN
             EOF
 
-            echo -n $GPG_KEY | base64 --decode > priv.gpg
-            echo $GPG_PHRASE | gpg --batch --import --passphrase-fd 0 priv.gpg
+            echo -n $GPG_KEY | base64 --decode > ~/priv.gpg
+            echo $GPG_PHRASE | gpg --batch --import --passphrase-fd 0 ~/priv.gpg
 
             git config --global user.email "secops+cpe-image-bot@circleci.com"
             git config --global user.name "cpe-image-bot"
