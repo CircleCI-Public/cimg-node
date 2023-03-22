@@ -47,13 +47,13 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "f8:07:0f:f6:b5:eb:57:ae:be:4d:2f:2d:be:70:8f:ff"
-      - run:
-          name: SSH config to pull and push project
-          command: |
-            ssh-add -D
-            ssh-add ~/.ssh/id_rsa_f8070ff6b5eb57aebe4d2f2dbe708fff
-            ssh-keygen -f ~/.ssh/id_rsa_f8070ff6b5eb57aebe4d2f2dbe708fff -y > ~/.ssh/id_rsa_f8070ff6b5eb57aebe4d2f2dbe708fff.pub
-            echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFHZoU4/njm1peseKCHfY4igdb4cbVwK16ADNlIoj6Ch secops+cpe-image-bot@circleci.com" > ~/.ssh/allowed_signers
+      # - run:
+      #     name: SSH config to pull and push project
+      #     command: |
+      #       ssh-add -D
+      #       ssh-add ~/.ssh/id_rsa_f8070ff6b5eb57aebe4d2f2dbe708fff
+      #       ssh-keygen -f ~/.ssh/id_rsa_f8070ff6b5eb57aebe4d2f2dbe708fff -y > ~/.ssh/id_rsa_f8070ff6b5eb57aebe4d2f2dbe708fff.pub
+      #       echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFHZoU4/njm1peseKCHfY4igdb4cbVwK16ADNlIoj6Ch secops+cpe-image-bot@circleci.com" > ~/.ssh/allowed_signers
       - run:
           name: Run git config
           command: |
@@ -65,16 +65,21 @@ jobs:
 
             git config --global user.email "secops+cpe-image-bot@circleci.com"
             git config --global user.name "cpe-image-bot"
-            git config --global user.signingkey "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFHZoU4/njm1peseKCHfY4igdb4cbVwK16ADNlIoj6Ch"
-            git config --global gpg.ssh.allowedSignersFile ~/.ssh/allowed_signers
+            git config --global user.signingkey 3BC78233B4D504DF
+            # git config --global user.signingkey "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFHZoU4/njm1peseKCHfY4igdb4cbVwK16ADNlIoj6Ch"
+            # git config --global gpg.ssh.allowedSignersFile ~/.ssh/allowed_signers
             git config --global url."https://github.com".insteadOf ssh://git@github.com
             git config --global url."https://github.com/".insteadOf git@github.com:
             git config --global credential.helper "/bin/bash ~/githelper.sh"
-            git config --global gpg.format ssh
+            # git config --global gpg.format ssh
             git config --global commit.gpgsign true
             git submodule sync
+            echo 'export GPG_TTY=$(tty)' >> ~/.bashrc
       - run:
           name: Run version update script
           command: |
-            sudo chmod +x nodeFeed.sh
-            ./nodeFeed.sh
+            git checkout -b testBranch
+            git commit --allow-empty -m "test with gpg"
+            git push -u origin testBranch
+            # sudo chmod +x nodeFeed.sh
+            # ./nodeFeed.sh
