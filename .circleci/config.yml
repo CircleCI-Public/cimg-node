@@ -68,7 +68,7 @@ jobs:
 
             git config --global user.email "secops+cpe-image-bot@circleci.com"
             git config --global user.name "cpe-image-bot"
-            git config --global user.signingkey 3BC78233B4D504DF
+            git config --global user.signingkey A1B017592AFDCDAF!
             # git config --global user.signingkey "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFHZoU4/njm1peseKCHfY4igdb4cbVwK16ADNlIoj6Ch"
             # git config --global gpg.ssh.allowedSignersFile ~/.ssh/allowed_signers
             git config --global url."https://github.com".insteadOf ssh://git@github.com
