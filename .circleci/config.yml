@@ -33,7 +33,7 @@ workflows:
             - slack/notify:
                 branch_pattern: release-v.+
                 event: pass
-                mentions: "@images"
+                mentions: "@jalexchen"
                 template: basic_success_1
           context: cimg-publishing
       - cimg/build-and-deploy:
@@ -43,6 +43,12 @@ workflows:
             branches:
               only:
                 - main
+          post-steps:
+            - slack/notify:
+                branch_pattern: main
+                event: fail
+                mentions: "@images"
+                template: basic_fail_1
           context: cimg-publishing
 
 jobs:
