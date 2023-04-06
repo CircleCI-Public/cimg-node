@@ -77,4 +77,5 @@ jobs:
           name: Run version update script
           command: |
             sudo chmod +x nodeFeed.sh
+            git submodule update --init --recursive
             ./nodeFeed.sh
