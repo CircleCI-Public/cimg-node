@@ -72,8 +72,6 @@ jobs:
       - run:
           name: Run git config
           command: |
-            touch $BASH_ENV
-            echo "export GITHUB_TOKEN=$IMAGE_BOT_TOKEN" >> $BASH_ENV
             cat \<<'EOF' >> ~/githelper.sh
               #!/usr/bin/env bash
               echo username=$GIT_USERNAME
@@ -90,7 +88,8 @@ jobs:
             git config --global gpg.format ssh
             git config --global commit.gpgsign true
             git submodule sync
-      - gh/setup
+      - gh/setup:
+          token: GH_TOKEN
       - run:
           name: Run version update script
           command: |
