@@ -3,6 +3,7 @@ version: 2.1
 orbs:
   cimg: circleci/cimg@0.3.0
   slack: circleci/slack@4.12.1
+  gh: circleci/github-cli@2.2.0
 
 parameters:
   cron:
@@ -11,14 +12,15 @@ parameters:
 
 workflows:
   automated-wf:
-      when: << pipeline.parameters.cron >>
+      when:
+        not: << pipeline.parameters.cron >>
       jobs:
         - check-feed:
             context:
               - cimg-publishing
   main-wf:
-    when:
-      not: << pipeline.parameters.cron >>
+    when: << pipeline.parameters.cron >>
+      # not: << pipeline.parameters.cron >>
     jobs:
       - cimg/build-and-deploy:
           name: "Staging"
@@ -29,12 +31,12 @@ workflows:
             branches:
               ignore:
                 - main
-          post-steps:
-            - slack/notify:
-                branch_pattern: release-v.+
-                event: pass
-                mentions: "@jalexchen"
-                template: basic_success_1
+          # post-steps:
+          #   - slack/notify:
+          #       branch_pattern: release-v.+
+          #       event: pass
+          #       mentions: "@jalexchen"
+          #       template: basic_success_1
           context: cimg-publishing
       - cimg/build-and-deploy:
           name: "Deploy"
@@ -70,10 +72,12 @@ jobs:
       - run:
           name: Run git config
           command: |
+            touch $BASH_ENV
+            echo "export GITHUB_TOKEN=$IMAGE_BOT_TOKEN" >> $BASH_ENV
             cat \<<'EOF' >> ~/githelper.sh
               #!/usr/bin/env bash
               echo username=$GIT_USERNAME
-              echo password=$IMAGE_BOT_TOKEN
+              echo password=$GITHUB_TOKEN
             EOF
 
             git config --global user.email "secops+cpe-image-bot@circleci.com"
@@ -86,9 +90,11 @@ jobs:
             git config --global gpg.format ssh
             git config --global commit.gpgsign true
             git submodule sync
+      - gh/setup
       - run:
           name: Run version update script
           command: |
             sudo chmod +x nodeFeed.sh
             git submodule update --init --recursive
+            cd shared && git checkout feat/version-checking && cd ..
             ./nodeFeed.sh

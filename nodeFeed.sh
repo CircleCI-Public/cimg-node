@@ -49,8 +49,15 @@ getNodeVersions
 if [ -n "${vers[*]}" ]; then
   echo "Included version updates: ${vers[*]}"
   echo "Running release script"
-  ./shared/release.sh "${vers[@]}"
+  # ./shared/release.sh "${vers[@]}"
 else
+  branchName=testing123
   echo "No new version updates"
-  exit 0
+  touch test.txt && echo "hi" >> touch.txt
+  git checkout -b $branchName
+  git add .
+  git commit -m "$branchName"
+  git push -u origin "$branchName"
+  gh pr create --title "$branchName" --head "$branchName"
+  # exit 0
 fi
