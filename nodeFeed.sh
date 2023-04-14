@@ -51,9 +51,9 @@ if [ -n "${vers[*]}" ]; then
   echo "Running release script"
   # ./shared/release.sh "${vers[@]}"
 else
-  branchName=testing123
+  branchName=testing1234
   echo "No new version updates"
-  touch test.txt && echo "hi" >> touch.txt
+  echo "hi" >> touch.txt
   git checkout -b $branchName
   git add .
   git commit -m "$branchName"
