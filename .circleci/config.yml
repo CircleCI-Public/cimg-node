@@ -3,6 +3,7 @@ version: 2.1
 orbs:
   cimg: circleci/cimg@0.3.0
   slack: circleci/slack@4.12.1
+  gh: circleci/github-cli@2.2.0
 
 parameters:
   cron:
@@ -86,6 +87,8 @@ jobs:
             git config --global gpg.format ssh
             git config --global commit.gpgsign true
             git submodule sync
+      - gh/setup:
+          token: IMAGE_BOT_TOKEN
       - run:
           name: Run version update script
           command: |
