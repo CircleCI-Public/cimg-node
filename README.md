@@ -211,7 +211,7 @@ Don't forget that to see any of these changes locally, the `gen-dockerfiles.sh` 
 
 ## Contributing
 
-We encourage [issues](https://github.com/CircleCI-Public/cimg-elixir/issues) and [pull requests](https://github.com/CircleCI-Public/cimg-elixir/pulls) against this repository.
+We encourage [issues](https://github.com/CircleCI-Public/cimg-node/issues) and [pull requests](https://github.com/CircleCI-Public/cimg-node/pulls) against this repository.
 
 Please check out our [contributing guide](.github/CONTRIBUTING.md) which outlines best practices for contributions and what you can expect from the images team at CircleCI.
 
