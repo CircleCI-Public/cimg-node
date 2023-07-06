@@ -10,7 +10,7 @@ FROM cimg/base:2023.04
 
 LABEL maintainer="Community & Partner Engineering Team <community-partner@circleci.com>"
 
-ENV NODE_VERSION 18.16.1
+ENV NODE_VERSION 20.4.0
 
 USER root
 
