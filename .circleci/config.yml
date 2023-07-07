@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  cimg: circleci/cimg@dev:5380ba23976708ef8c7eaa65c071728a880b7c12
+  cimg: circleci/cimg@dev:7591f73ddbd9b49893c67449fbfd2e20a48ab709
   slack: circleci/slack@4.12.1
   gh: circleci/github-cli@2.2.0
 
