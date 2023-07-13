@@ -4,4 +4,3 @@ repository=node
 parent=base
 variants=(browsers)
 namespace=cimg
-arm64=1
