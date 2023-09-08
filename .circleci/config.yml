@@ -245,7 +245,7 @@ jobs:
           command: |
             if ! git log -1 --pretty=%s | grep "\[release]\"; then
               echo "Not a release commit. Skipping publishing"
-              circleci halt
+              circleci step halt
             fi
       - cimg/capture-metadata:
           docker-namespace: <<parameters.docker-namespace>>
