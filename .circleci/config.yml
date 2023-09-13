@@ -34,19 +34,19 @@ workflows:
               ignore:
                 - main
           context: cimg-publishing
-      # - cimg-staging:
-      #     docker-namespace: ccitest
-      #     docker-repository: node
-      #     target-namespace: ccitest
-      #     target-repository: cimg-orb
-      #     organization: circleci-images
-      #     filters:
-      #       branches:
-      #         ignore:
-      #           - main
-      #     requires:
-      #       - cimg-build
-      #     context: cimg-publishing
+      - cimg-staging:
+          docker-namespace: ccitest
+          docker-repository: node
+          target-namespace: ccitest
+          target-repository: cimg-orb
+          organization: circleci-images
+          filters:
+            branches:
+              ignore:
+                - main
+          requires:
+            - cimg-build
+          context: cimg-publishing
       # - cimg-verify:
       #     docker-namespace: ccitest
       #     docker-repository: node
@@ -138,9 +138,9 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - cimg/build-images:
-          docker-namespace: <<parameters.docker-namespace>>
-          docker-repository: <<parameters.docker-repository>>
+      # - cimg/build-images:
+      #     docker-namespace: <<parameters.docker-namespace>>
+      #     docker-repository: <<parameters.docker-repository>>
       - run:
           name: capture metadata
           command: |
@@ -151,45 +151,62 @@ jobs:
               tag=$(basename ${file%-*})
               jq --arg tag "$tag" --slurpfile input "$file" '. += { ($tag): $input }' "/tmp/registry/metadata.json" > tmp.json && mv tmp.json "/tmp/registry/metadata.json"
             done
+      # - aws-cli/setup:
+      #     region: ${AWS_DEFAULT_REGION}
+      #     role_arn: arn:aws:iam::483285841698:role/cpe-images-bucket-write
+      #     role_session_name: "write-to-s3"
+      # - run:
+      #     name: Copy to s3
+      #     command: |
+      #       cimg copy "<<parameters.docker-namespace>>" "<<parameters.docker-repository>>" "$S3_BUCKET_NAME" "$s3Directory"
+      - persist_to_workspace:
+          root: /tmp/registry
+          paths:
+            - "metadata.json"
+
+  cimg-staging:
+    docker:
+      - image: *aws-image
+    parameters:
+      docker-namespace:
+        type: string
+      docker-repository:
+        type: string
+      target-namespace:
+        type: string
+      target-repository:
+        type: string
+      organization:
+        type: string
+    steps:
+      - checkout
+      - attach_workspace:
+          at: /tmp/registry
       - aws-cli/setup:
           region: ${AWS_DEFAULT_REGION}
-          role_arn: arn:aws:iam::483285841698:role/cpe-images-bucket-write
-          role_session_name: "write-to-s3"
+          role_arn: arn:aws:iam::483285841698:role/cpe-kms-sign
+          role_session_name: "sign-docker-images"
       - run:
-          name: Copy to s3
+          name: Log in to Docker
           command: |
-            cimg copy "<<parameters.docker-namespace>>" "<<parameters.docker-repository>>" "$S3_BUCKET_NAME" "$s3Directory"
-
-  # cimg-staging:
-  #   docker:
-  #     - image: *aws-image
-  #   parameters:
-  #     docker-namespace:
-  #       type: string
-  #     docker-repository:
-  #       type: string
-  #     target-namespace:
-  #       type: string
-  #     target-repository:
-  #       type: string
-  #     organization:
-  #       type: string
-  #   steps:
-  #     - attach_workspace:
-  #         at: /tmp/registry
-  #     - aws-cli/setup:
-  #         region: ${AWS_DEFAULT_REGION}
-  #         role_arn: arn:aws:iam::483285841698:role/cpe-kms-sign
-  #         role_session_name: "sign-docker-images"
-  #     - cimg/sign-images:
-  #         docker-namespace: <<parameters.docker-namespace>>
-  #         docker-repository: <<parameters.docker-repository>>
-  #         organization: <<parameters.organization>>
-  #     - cimg/copy-images:
-  #         docker-namespace: <<parameters.docker-namespace>>
-  #         docker-repository: <<parameters.docker-repository>>
-  #         target-namespace: <<parameters.target-namespace>>
-  #         target-repository: <<parameters.target-namespace>>
+            echo "$DOCKER_TOKEN" | docker login -u "$DOCKER_USER" --password-stdin
+      - run:
+          name: sign images
+          environment:
+            ORB_PARAM_DOCKER_NAMESPACE: <<parameters.docker-namespace>>
+            ORB_PARAM_DOCKER_REPOSITORY: <<parameters.docker-repository>>
+            ORB_PARAM_ORGANIZATION: <<parameters.organization>>
+          command: |
+            cimg operate sign "$KMS_KEY"
+      - run:
+          name: copy images
+          environment:
+            ORB_PARAM_DOCKER_NAMESPACE: <<parameters.docker-namespace>>
+            ORB_PARAM_DOCKER_REPOSITORY: <<parameters.docker-repository>>
+            ORB_PARAM_TARGET_DOCKER_NAMESPACE: <<parameters.target-namespace>>
+            ORB_PARAM_TARGET_DOCKER_REPOSITORY: <<parameters.target-repository>>
+          command: |
+            cimg operate copy
 
   # cimg-verify:
   #   docker:
