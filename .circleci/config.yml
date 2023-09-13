@@ -1,14 +1,10 @@
 version: 2.1
 
 orbs:
-  cimg: circleci/cimg@dev:d365891f2c6242fdc77cd40f9bf4589dcaa3d162
+  cimg: circleci/cimg@0.3.3
   aws-cli: circleci/aws-cli@4.1.0
   slack: circleci/slack@4.12.1
   gh: circleci/github-cli@2.2.0
-
-aws-image-tag:
-  # aws-image: &aws-image cimg/aws:2023.07.1
-  aws-image: &aws-image ferriswh33l/sign:2023.10
 
 parameters:
   cron:
@@ -29,59 +25,21 @@ workflows:
       - cimg-build:
           docker-namespace: ccitest
           docker-repository: node
-          filters:
-            branches:
-              ignore:
-                - main
-          context: cimg-publishing
-      # - cimg-staging:
-      #     docker-namespace: ccitest
-      #     docker-repository: node
-      #     target-namespace: ccitest
-      #     target-repository: cimg-orb
-      #     organization: circleci-images
-      #     filters:
-      #       branches:
-      #         ignore:
-      #           - main
-      #     requires:
-      #       - cimg-build
-      #     context: cimg-publishing
-      - cimg-verify:
-          docker-namespace: ccitest
-          docker-repository: node
           target-namespace: ccitest
           target-repository: cimg-orb
+          registry-dir: /tmp/registry
+          organization: circleci-images
           filters:
             branches:
               ignore:
                 - main
-          requires:
-            - cimg-build
-      #     post-steps:
-      #       - slack/notify:
-      #           branch_pattern: release-v.+
-      #           event: pass
-      #           mentions: "@jalexchen"
-      #           template: basic_success_1
+          post-steps:
+            - slack/notify:
+                branch_pattern: release-v.+
+                event: pass
+                mentions: "@jalexchen"
+                template: basic_success_1
           context: cimg-publishing
-      # - cimg-deploy:
-      #     docker-namespace: ccitest
-      #     docker-repository: node
-      #     target-namespace: cimg
-      #     target-repository: node
-      #     organization: circleci-images
-      #     filters:
-      #       branches:
-      #         only:
-      #           - main
-      #     post-steps:
-      #       - slack/notify:
-      #           branch_pattern: main
-      #           event: fail
-      #           mentions: "@images"
-      #           template: basic_fail_1
-      #     context: cimg-publishing
 
 jobs:
   check-feed:
@@ -129,44 +87,7 @@ jobs:
 
   cimg-build:
     docker:
-      - image: *aws-image
-    parameters:
-      docker-namespace:
-        type: string
-      docker-repository:
-        type: string
-    steps:
-      - checkout
-      - setup_remote_docker
-      # - cimg/build-images:
-      #     docker-namespace: <<parameters.docker-namespace>>
-      #     docker-repository: <<parameters.docker-repository>>
-      - run:
-          name: capture metadata
-          command: |
-            cimg capture "<<parameters.docker-namespace>>" "<<parameters.docker-repository>>"
-
-            echo "{}" > "/tmp/registry/metadata.json"
-            for file in /tmp/registry/*-manifest.json; do
-              tag=$(basename ${file%-*})
-              jq --arg tag "$tag" --slurpfile input "$file" '. += { ($tag): $input }' "/tmp/registry/metadata.json" > tmp.json && mv tmp.json "/tmp/registry/metadata.json"
-            done
-      # - aws-cli/setup:
-      #     region: ${AWS_DEFAULT_REGION}
-      #     role_arn: arn:aws:iam::483285841698:role/cpe-images-bucket-write
-      #     role_session_name: "write-to-s3"
-      # - run:
-      #     name: Copy to s3
-      #     command: |
-      #       cimg copy "<<parameters.docker-namespace>>" "<<parameters.docker-repository>>" "$S3_BUCKET_NAME" "$s3Directory"
-      - persist_to_workspace:
-          root: /tmp/registry
-          paths:
-            - "metadata.json"
-
-  cimg-staging:
-    docker:
-      - image: *aws-image
+      - image: ferriswh33l/sign:2023.10
     parameters:
       docker-namespace:
         type: string
@@ -175,117 +96,69 @@ jobs:
       target-namespace:
         type: string
       target-repository:
+        type: string
+      registry-dir:
         type: string
       organization:
         type: string
     steps:
       - checkout
-      - attach_workspace:
-          at: /tmp/registry
+      - setup_remote_docker
+      - cimg/build-images:
+          docker-namespace: <<parameters.docker-namespace>>
+          docker-repository: <<parameters.docker-repository>>
+      - run:
+          name: Capture metadata
+          command: |
+            (
+              echo "export registryDir=<<parameters.registry-dir>>" >> $BASH_ENV
+              echo "export namespace=<<parameters.docker-namespace>>" >> $BASH_ENV
+              echo "export repository=<<parameters.docker-repository>>" >> $BASH_ENV
+            )
+            source GEN-CHECK
+            source $BASH_ENV
+            cimg capture "<<parameters.docker-namespace>>" "<<parameters.docker-repository>>" "$registryDir"
+
+            echo "{}" > "$registryDir/metadata.json"
+            for file in $registryDir/*-manifest.json; do
+              tag=$(basename ${file%-*})
+              jq --arg tag "$tag" --slurpfile input "$file" '. += { ($tag): $input }' "$registryDir/metadata.json" > tmp.json && mv tmp.json "$registryDir/metadata.json"
+            done
+      - aws-cli/setup:
+          region: ${AWS_DEFAULT_REGION}
+          role_arn: arn:aws:iam::483285841698:role/cpe-images-bucket-write
+          role_session_name: "write-to-s3"
+      - run:
+          name: Copy to s3
+          command: |
+            cimg copy "$S3_BUCKET_NAME" "<<parameters.docker-namespace>>-<<parameters.docker-repository>>"
       - aws-cli/setup:
           region: ${AWS_DEFAULT_REGION}
           role_arn: arn:aws:iam::483285841698:role/cpe-kms-sign
           role_session_name: "sign-docker-images"
       - run:
-          name: Log in to Docker
+          name: Sign and copy images
           command: |
             echo "$DOCKER_TOKEN" | docker login -u "$DOCKER_USER" --password-stdin
-      - run:
-          name: sign images
-          environment:
-            ORB_PARAM_DOCKER_NAMESPACE: <<parameters.docker-namespace>>
-            ORB_PARAM_DOCKER_REPOSITORY: <<parameters.docker-repository>>
-            ORB_PARAM_ORGANIZATION: <<parameters.organization>>
-          command: |
-            cimg operate sign "$KMS_KEY"
-      - run:
-          name: copy images
-          environment:
-            ORB_PARAM_DOCKER_NAMESPACE: <<parameters.docker-namespace>>
-            ORB_PARAM_DOCKER_REPOSITORY: <<parameters.docker-repository>>
-            ORB_PARAM_TARGET_DOCKER_NAMESPACE: <<parameters.target-namespace>>
-            ORB_PARAM_TARGET_DOCKER_REPOSITORY: <<parameters.target-repository>>
-          command: |
-            cimg operate copy
 
-  cimg-verify:
-    docker:
-      - image: *aws-image
-    parameters:
-      docker-namespace:
-        type: string
-      docker-repository:
-        type: string
-      target-namespace:
-        type: string
-      target-repository:
-        type: string
-    steps:
-      - checkout
-      - attach_workspace:
-          at: /tmp/registry
+            cimg operate sign "$KMS_KEY" "<<parameters.organization>>"
+            cimg operate copy "<<parameters.target-namespace>>" "<<parameters.target-repository>>"
       - aws-cli/setup:
           region: ${AWS_DEFAULT_REGION}
           role_arn: arn:aws:iam::483285841698:role/cpe-images-bucket-read
           role_session_name: "read-from-s3"
       - run:
-          name: verify signatures
-          environment:
-            ORB_PARAM_DOCKER_NAMESPACE: <<parameters.docker-namespace>>
-            ORB_PARAM_DOCKER_REPOSITORY: <<parameters.docker-repository>>
-            ORB_PARAM_TARGET_DOCKER_NAMESPACE: <<parameters.target-namespace>>
-            ORB_PARAM_TARGET_DOCKER_REPOSITORY: <<parameters.target-repository>>
-            ORB_PARAM_REGISTRY_DIR: /tmp/registry
+          name: Verify signatures
           command: |
-            touch "/tmp/registry/validation.txt"
-            validation=$(cat /tmp/registry/validation.txt)
+            touch "$registryDir/validation.txt"
+            validation=$(cat $registryDir/validation.txt)
 
-            cimg operate validate
+            cimg operate validate "<<parameters.target-namespace>>" "<<parameters.target-repository>>"
             cimg operate verify "$KMS_KEY"
 
             if [[ -z $validation ]]; then
               echo "Manifest check succeeded"
             else
-              echo "Please check /tmp/registry/verification.txt for differences in manifests"
+              echo "Please check $registryDir/verification.txt for differences in manifests"
               exit 1
             fi
-
-  # cimg-deploy:
-  #   docker:
-  #     - image: *aws-image
-  #   parameters:
-  #     docker-namespace:
-  #       type: string
-  #     docker-repository:
-  #       type: string
-  #     target-namespace:
-  #       type: string
-  #     target-repository:
-  #       type: string
-  #     organization:
-  #       type: string
-  #   steps:
-  #     - checkout
-  #     - run:
-  #         name: Check if release commit
-  #         command: |
-  #           if ! git log -1 --pretty=%s | grep "\[release]\"; then
-  #             echo "Not a release commit. Skipping publishing"
-  #             circleci step halt
-  #           fi
-  #     - cimg/capture-metadata:
-  #         docker-namespace: <<parameters.docker-namespace>>
-  #         docker-repository: <<parameters.docker-repository>>
-  #     - aws-cli/setup:
-  #         region: ${AWS_DEFAULT_REGION}
-  #         role_arn: arn:aws:iam::483285841698:role/cpe-kms-sign
-  #         role_session_name: "sign-docker-images"
-  #     - cimg/copy-images:
-  #         docker-namespace: <<parameters.docker-namespace>>
-  #         docker-repository: <<parameters.docker-repository>>
-  #         target-namespace: <<parameters.target-namespace>>
-  #         target-repository: <<parameters.target-namespace>>
-  #     - cimg/sign-images:
-  #         docker-namespace: <<parameters.docker-namespace>>
-  #         docker-repository: <<parameters.docker-repository>>
-  #         organization: <<parameters.organization>>
