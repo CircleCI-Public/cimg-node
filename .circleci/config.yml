@@ -34,37 +34,37 @@ workflows:
               ignore:
                 - main
           context: cimg-publishing
-      - cimg-staging:
+      # - cimg-staging:
+      #     docker-namespace: ccitest
+      #     docker-repository: node
+      #     target-namespace: ccitest
+      #     target-repository: cimg-orb
+      #     organization: circleci-images
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - main
+      #     requires:
+      #       - cimg-build
+      #     context: cimg-publishing
+      - cimg-verify:
           docker-namespace: ccitest
           docker-repository: node
           target-namespace: ccitest
           target-repository: cimg-orb
-          organization: circleci-images
           filters:
             branches:
               ignore:
                 - main
           requires:
             - cimg-build
-          context: cimg-publishing
-      # - cimg-verify:
-      #     docker-namespace: ccitest
-      #     docker-repository: node
-      #     target-namespace: ccitest
-      #     target-repository: cimg-orb
-      #     filters:
-      #       branches:
-      #         ignore:
-      #           - main
-      #     requires:
-      #       - cimg-staging
       #     post-steps:
       #       - slack/notify:
       #           branch_pattern: release-v.+
       #           event: pass
       #           mentions: "@jalexchen"
       #           template: basic_success_1
-      #     context: cimg-publishing
+          context: cimg-publishing
       # - cimg-deploy:
       #     docker-namespace: ccitest
       #     docker-repository: node
@@ -208,44 +208,47 @@ jobs:
           command: |
             cimg operate copy
 
-  # cimg-verify:
-  #   docker:
-  #     - image: *aws-image
-  #   parameters:
-  #     docker-namespace:
-  #       type: string
-  #     docker-repository:
-  #       type: string
-  #     target-namespace:
-  #       type: string
-  #     target-repository:
-  #       type: string
-  #   steps:
-  #     - checkout
-  #     - aws-cli/setup:
-  #         region: ${AWS_DEFAULT_REGION}
-  #         role_arn: arn:aws:iam::483285841698:role/cpe-images-bucket-read
-  #         role_session_name: "read-from-s3"
-  #     - when:
-  #         condition:
-  #           not: <<pipeline.parameters.check_all>>
-  #         steps:
-  #           - attach_workspace:
-  #               at: /tmp/registry
-  #           - cimg/verify-signature:
-  #               docker-namespace: <<parameters.docker-namespace>>
-  #               docker-repository: <<parameters.docker-repository>>
-  #               target-namespace: <<parameters.target-namespace>>
-  #               target-repository: <<parameters.target-namespace>>
-  #     - when:
-  #         condition: <<pipeline.parameters.check_all>>
-  #         steps:
-  #           - cimg/capture-metadata:
-  #               docker-namespace: <<parameters.docker-namespace>>
-  #               docker-repository: <<parameters.docker-repository>>
-  #           - cimg/verify-all-signatures:
-  #               docker-namespace: <<parameters.docker-namespace>>
-  #               docker-repository: <<parameters.docker-repository>>
+  cimg-verify:
+    docker:
+      - image: *aws-image
+    parameters:
+      docker-namespace:
+        type: string
+      docker-repository:
+        type: string
+      target-namespace:
+        type: string
+      target-repository:
+        type: string
+    steps:
+      - checkout
+      - attach_workspace:
+          at: /tmp/registry
+      - aws-cli/setup:
+          region: ${AWS_DEFAULT_REGION}
+          role_arn: arn:aws:iam::483285841698:role/cpe-images-bucket-read
+          role_session_name: "read-from-s3"
+      - run:
+          name: verify signatures
+          environment:
+            ORB_PARAM_DOCKER_NAMESPACE: <<parameters.docker-namespace>>
+            ORB_PARAM_DOCKER_REPOSITORY: <<parameters.docker-repository>>
+            ORB_PARAM_TARGET_DOCKER_NAMESPACE: <<parameters.target-namespace>>
+            ORB_PARAM_TARGET_DOCKER_REPOSITORY: <<parameters.target-repository>>
+            ORB_PARAM_REGISTRY_DIR: /tmp/registry
+          command: |
+            touch "/tmp/registry/validation.txt"
+            validation=$(cat /tmp/registry/validation.txt)
+
+            cimg operate validate
+            cimg operate verify "$KMS_KEY"
+
+            if [[ -z $validation ]]; then
+              echo "Manifest check succeeded"
+            else
+              echo "Please check /tmp/registry/verification.txt for differences in manifests"
+              exit 1
+            fi
 
   # cimg-deploy:
   #   docker:
