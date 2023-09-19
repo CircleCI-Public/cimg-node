@@ -81,7 +81,7 @@ jobs:
             sudo chmod +x nodeFeed.sh
             git submodule update --init --recursive
             ./nodeFeed.sh
-  cimg-build-and-deploy:
+  cimg-build:
     docker:
       - image: cimg/aws:2023.09.1
     parameters:
