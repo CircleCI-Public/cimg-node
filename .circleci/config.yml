@@ -106,9 +106,9 @@ jobs:
           region: ${AWS_DEFAULT_REGION}
           role_arn: arn:aws:iam::483285841698:role/cpe-kms-sign
           role_session_name: "sign-docker-images"
-      - cimg/build-images:
-          docker-namespace: <<parameters.docker-namespace>>
-          docker-repository: <<parameters.docker-repository>>
+      # - cimg/build-images:
+      #     docker-namespace: <<parameters.docker-namespace>>
+      #     docker-repository: <<parameters.docker-repository>>
       - run:
           name: Install Cosign
           command: |
@@ -125,5 +125,4 @@ jobs:
           command: |
             echo $DOCKER_TOKEN | docker login -u $DOCKER_USER --password-stdin
             git submodule update --init --recursive
-            sudo cp shared/build-and-deploy.sh /usr/local/bin/cimg
-            cimg run
+            ./shared/build-and-deploy.sh run
