@@ -116,7 +116,7 @@ jobs:
       - run:
           name: Halt if not release
           command: |
-            if ! git log -1 --pretty=%s | grep "\[release\]; then
+            if ! git log -1 --pretty=%s | grep "\[release\]"; then
               circleci step halt
             fi
       - aws-cli/setup:
