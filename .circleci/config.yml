@@ -22,8 +22,8 @@ workflows:
     when:
       not: << pipeline.parameters.cron >>
     jobs:
-      - cimg-build-and-deploy:
-          name: "Build and Deploy"
+      - cimg-build:
+          name: "Build and Stage"
           docker-namespace: ccitest
           docker-repository: node
           filters:
@@ -37,6 +37,14 @@ workflows:
                 event: pass
                 mentions: "@jalexchen"
                 template: basic_success_1
+      - cimg-deploy:
+          name: "Deploy"
+          filters:
+            branches:
+              only:
+                - main
+          context: cimg-publishing
+          post-steps:
             - slack/notify:
                 branch_pattern: main
                 event: fail
@@ -86,9 +94,9 @@ jobs:
             sudo chmod +x nodeFeed.sh
             git submodule update --init --recursive
             ./nodeFeed.sh
-  cimg-build-and-deploy:
+  cimg-build:
     docker:
-      - image: cimg/aws:2023.09.1
+      - image: cimg/base:current
     parameters:
       docker-namespace:
         type: string
@@ -97,6 +105,20 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
+      - cimg/build-images:
+          docker-namespace: <<parameters.docker-namespace>>
+          docker-repository: <<parameters.docker-repository>>
+  cimg-deploy:
+    docker:
+      - image: cimg/aws:2023.09.1
+    steps:
+      - checkout
+      - run:
+          name: Halt if not release
+          command: |
+            if ! git log -1 --pretty=%s | grep "\[release\]; then
+              circleci step halt
+            fi
       - aws-cli/setup:
           region: ${AWS_DEFAULT_REGION}
           role_arn: arn:aws:iam::483285841698:role/cpe-images-bucket-write
@@ -111,14 +133,6 @@ jobs:
           region: ${AWS_DEFAULT_REGION}
           role_arn: arn:aws:iam::483285841698:role/cpe-kms-sign
           role_session_name: "sign-docker-images"
-      - when:
-          condition:
-            not:
-              equal: [ main, <<pipeline.git.branch>> ]
-          steps:
-          - cimg/build-images:
-              docker-namespace: <<parameters.docker-namespace>>
-              docker-repository: <<parameters.docker-repository>>
       - run:
           name: Install Cosign
           command: |
@@ -135,4 +149,4 @@ jobs:
           command: |
             echo $DOCKER_TOKEN | docker login -u $DOCKER_USER --password-stdin
             git submodule update --init --recursive
-            ./shared/build-and-deploy.sh run "$CIRCLE_BRANCH" "$S3_BUCKET_NAME"
+            ./shared/build-and-deploy.sh run
