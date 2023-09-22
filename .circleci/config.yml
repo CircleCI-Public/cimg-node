@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   cimg: circleci/cimg@0.3.3
+  aws-cli: circleci/aws-cli@4.1.0
   slack: circleci/slack@4.12.1
   gh: circleci/github-cli@2.2.0
 
@@ -21,36 +22,34 @@ workflows:
     when:
       not: << pipeline.parameters.cron >>
     jobs:
-      - cimg/build-and-deploy:
-          name: "Staging"
+      - cimg-build:
+          name: "Build and Stage"
           docker-namespace: ccitest
           docker-repository: node
-          publish-branch: test
           filters:
             branches:
               ignore:
                 - main
+          context: cimg-publishing
           post-steps:
             - slack/notify:
                 branch_pattern: release-v.+
                 event: pass
                 mentions: "@jalexchen"
                 template: basic_success_1
-          context: cimg-publishing
-      - cimg/build-and-deploy:
+      - cimg-deploy:
           name: "Deploy"
-          docker-repository: node
           filters:
             branches:
               only:
                 - main
+          context: cimg-publishing
           post-steps:
             - slack/notify:
                 branch_pattern: main
                 event: fail
                 mentions: "@images"
                 template: basic_fail_1
-          context: cimg-publishing
 
 jobs:
   check-feed:
@@ -95,3 +94,59 @@ jobs:
             sudo chmod +x nodeFeed.sh
             git submodule update --init --recursive
             ./nodeFeed.sh
+  cimg-build:
+    docker:
+      - image: cimg/base:current
+    parameters:
+      docker-namespace:
+        type: string
+      docker-repository:
+        type: string
+    steps:
+      - checkout
+      - setup_remote_docker
+      - cimg/build-images:
+          docker-namespace: <<parameters.docker-namespace>>
+          docker-repository: <<parameters.docker-repository>>
+  cimg-deploy:
+    docker:
+      - image: cimg/aws:2023.09.1
+    steps:
+      - checkout
+      - run:
+          name: Halt if not release
+          command: |
+            if ! git log -1 --pretty=%s | grep "\[release\]"; then
+              circleci step halt
+            fi
+      - aws-cli/setup:
+          region: ${AWS_DEFAULT_REGION}
+          role_arn: arn:aws:iam::483285841698:role/cpe-images-bucket-write
+          role_session_name: "write-to-s3"
+          profile_name: "s3write"
+      - aws-cli/setup:
+          region: ${AWS_DEFAULT_REGION}
+          role_arn: arn:aws:iam::483285841698:role/cpe-images-bucket-read
+          role_session_name: "read-from-s3"
+          profile_name: "s3read"
+      - aws-cli/setup:
+          region: ${AWS_DEFAULT_REGION}
+          role_arn: arn:aws:iam::483285841698:role/cpe-kms-sign
+          role_session_name: "sign-docker-images"
+      - run:
+          name: Install Cosign
+          command: |
+            url="https://github.com/sigstore/cosign/releases/latest/download/cosign-linux"
+            [[ $(uname -m) == "x86_64" ]] && ARCH="amd64" || ARCH="arm64"
+
+            if ! cosign version &> /dev/null; then
+              curl -O -L "$url-$ARCH" >cosign && \
+              sudo chmod 755 cosign
+              sudo cp cosign /usr/local/bin/
+            fi
+      - run:
+          name: Sign, Verify, Deploy
+          command: |
+            echo $DOCKER_TOKEN | docker login -u $DOCKER_USER --password-stdin
+            git submodule update --init --recursive
+            ./shared/build-and-deploy.sh run
