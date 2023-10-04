@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  cimg: circleci/cimg@0.5.1
+  cimg: circleci/cimg@0.5.2
   aws-cli: circleci/aws-cli@4.1.0
   slack: circleci/slack@4.12.1
   gh: circleci/github-cli@2.2.0
@@ -23,8 +23,6 @@ workflows:
       not: << pipeline.parameters.cron >>
     jobs:
       - cimg/build-and-deploy:
-          check-directory: true
-          check-file: false
           docker-namespace: ccitest
           docker-repository: node
           publish-branch: main
