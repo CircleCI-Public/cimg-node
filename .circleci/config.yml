@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  cimg: circleci/cimg@0.5.0
+  cimg: circleci/cimg@0.5.1
   aws-cli: circleci/aws-cli@4.1.0
   slack: circleci/slack@4.12.1
   gh: circleci/github-cli@2.2.0
@@ -46,7 +46,7 @@ workflows:
 jobs:
   check-feed:
     docker:
-      - image: cimg/base:2023.01
+      - image: cimg/base:current
     steps:
       - checkout
       - add_ssh_keys:
