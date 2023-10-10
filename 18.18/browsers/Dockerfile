@@ -6,7 +6,7 @@
 # the browsers variant. The normal version is based on the node variant of that
 # image. As this IS a Node image, there isn't a node variant.
 
-FROM cimg/node:18.18.0
+FROM cimg/node:18.18.1
 
 LABEL maintainer="CircleCI Community & Partner Engineering Team <community-partner@circleci.com>"
 
