@@ -40,6 +40,14 @@ workflows:
                 event: fail
                 mentions: "@images"
                 template: basic_fail_1
+      - push-alias-tags:
+          filters:
+            branches:
+              only:
+                - main
+          requires:
+            - cimg/build-and-deploy
+          context: cimg-publishing
 
 jobs:
   check-feed:
@@ -84,3 +92,19 @@ jobs:
             sudo chmod +x nodeFeed.sh
             git submodule update --init --recursive
             ./nodeFeed.sh
+
+  push-alias-tags:
+    docker:
+      - image: cimg/base:current
+    steps:
+      - checkout
+      - run:
+          name: "Log in to Docker"
+          command: |
+            echo "$DOCKER_TOKEN" | docker login -u "$DOCKER_USER" --password-stdin
+      - run:
+          name: "Push aliased tags if release"
+          command: |
+            if git log -1 --pretty=%s | grep "\[release\]"; then
+              git diff --quiet HEAD~1 ALIASES || ./push-images.sh
+            fi
