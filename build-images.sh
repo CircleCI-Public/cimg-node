@@ -4,5 +4,5 @@ set -eo pipefail
 
 docker context create cimg
 docker buildx create --use cimg
-docker buildx build --platform=linux/amd64,linux/arm64 --file 21.2/Dockerfile -t cimg/node:21.2.0 -t cimg/node:21.2 --push .
-docker buildx build --platform=linux/amd64 --file 21.2/browsers/Dockerfile -t cimg/node:21.2.0-browsers -t cimg/node:21.2-browsers --push .
+docker buildx build --platform=linux/amd64,linux/arm64 --file 20.10/Dockerfile -t cimg/node:20.10.0 -t cimg/node:20.10 --push .
+docker buildx build --platform=linux/amd64 --file 20.10/browsers/Dockerfile -t cimg/node:20.10.0-browsers -t cimg/node:20.10-browsers --push .
