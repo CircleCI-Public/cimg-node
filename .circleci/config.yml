@@ -1,8 +1,7 @@
 version: 2.1
 
 orbs:
-  cimg: circleci/cimg@0.5.2
-  aws-cli: circleci/aws-cli@4.1.0
+  cimg: circleci/cimg@0.6.0
   slack: circleci/slack@4.12.1
   gh: circleci/github-cli@2.2.0
 
@@ -10,14 +9,14 @@ parameters:
   cron:
     type: boolean
     default: false
-
+    
 workflows:
   automated-wf:
-      when: << pipeline.parameters.cron >>
-      jobs:
-        - check-feed:
-            context:
-              - cimg-publishing
+    when: << pipeline.parameters.cron >>
+    jobs:
+      - check-feed:
+          context:
+            - cimg-publishing
   main-wf:
     when:
       not: << pipeline.parameters.cron >>
@@ -26,9 +25,6 @@ workflows:
           docker-namespace: ccitest
           docker-repository: node
           publish-branch: main
-          s3_write_arn: arn:aws:iam::483285841698:role/cpe-images-bucket-write
-          s3_read_arn: arn:aws:iam::483285841698:role/cpe-images-bucket-read
-          sign_arn: arn:aws:iam::483285841698:role/cpe-kms-sign
           context: cimg-publishing
           post-steps:
             - slack/notify:
