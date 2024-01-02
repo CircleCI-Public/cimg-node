@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  cimg: circleci/cimg@0.6.0
+  cimg: circleci/cimg@0.6.1
   slack: circleci/slack@4.12.1
   gh: circleci/github-cli@2.2.0
 
@@ -9,7 +9,7 @@ parameters:
   cron:
     type: boolean
     default: false
-    
+
 workflows:
   automated-wf:
     when: << pipeline.parameters.cron >>
