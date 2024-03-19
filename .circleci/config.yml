@@ -72,16 +72,18 @@ jobs:
     resource_class: small
     steps:
       - checkout
-      - add_ssh_keys:
-          fingerprints:
-            - "f8:07:0f:f6:b5:eb:57:ae:be:4d:2f:2d:be:70:8f:ff"
       - run:
           name: SSH config to pull and push project
           command: |
             ssh-add -D
-            ssh-add ~/.ssh/id_rsa_f8070ff6b5eb57aebe4d2f2dbe708fff
-            ssh-keygen -f ~/.ssh/id_rsa_f8070ff6b5eb57aebe4d2f2dbe708fff -y > ~/.ssh/id_rsa_f8070ff6b5eb57aebe4d2f2dbe708fff.pub
-            echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFHZoU4/njm1peseKCHfY4igdb4cbVwK16ADNlIoj6Ch secops+cpe-image-bot@circleci.com" > ~/.ssh/allowed_signers
+            echo "$CIMG_SHARED_SSH_DEPLOY_KEY_B64" | base64 -d > ~/.ssh/id_rsa_cimg_shared
+            chmod 600 ~/.ssh/id_rsa_cimg_shared
+
+            ssh-add ~/.ssh/id_rsa_cimg_shared
+            ssh-keygen -f ~/.ssh/id_rsa_cimg_shared -y > ~/.ssh/id_rsa_cimg_shared.pub
+            CIMG_SHARED_PUBLIC=$(cat ~/.ssh/id_rsa_cimg_shared.pub)
+            echo "$CIMG_SHARED_PUBLIC $IMAGE_BOT_EMAIL" > ~/.ssh/allowed_signers
+
       - run:
           name: Run git config
           command: |
@@ -91,9 +93,9 @@ jobs:
               echo password=$IMAGE_BOT_TOKEN
             EOF
 
-            git config --global user.email "secops+cpe-image-bot@circleci.com"
-            git config --global user.name "cpe-image-bot"
-            git config --global user.signingkey "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFHZoU4/njm1peseKCHfY4igdb4cbVwK16ADNlIoj6Ch"
+            git config --global user.email "$IMAGE_BOT_EMAIL"
+            git config --global user.name "$GIT_USERNAME"
+            git config --global user.signingkey "$(cat ~/.ssh/id_rsa_cimg_shared.pub)"
             git config --global gpg.ssh.allowedSignersFile ~/.ssh/allowed_signers
             git config --global url."https://github.com".insteadOf ssh://git@github.com
             git config --global url."https://github.com/".insteadOf git@github.com:
