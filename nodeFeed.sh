@@ -25,7 +25,8 @@ buildParameter () {
 
 getNodeVersions() {
   RSS_URL="https://github.com/nodejs/node/tags.atom"
-  VERSIONS=$(curl --silent "$RSS_URL" | grep -E '(title)' | tail -n +2 | sed -e 's/^[ \t]*//' | sed -e 's/<title>//' -e 's/<\/title>//')
+  # The last sed reverses the flow so that the updates are processed in chronological order
+  VERSIONS=$(curl --silent "$RSS_URL" | grep -E '(title)' | tail -n +2 | sed -e 's/^[ \t]*//' | sed -e 's/<title>//' -e 's/<\/title>//') | sed '1!G;h;$!d'
 
   for version in $VERSIONS; do
     if [[ $version =~ ^[0-9]+(\.[0-9]+)*$ ]]; then
