@@ -1,1 +1,1 @@
-GEN_CHECK=(20.12.0=lts 18.20.0)
+GEN_CHECK=(21.7.2=current 20.12.1=lts 18.20.1)
