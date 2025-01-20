@@ -11,10 +11,10 @@ fi
 buildParameter () {
   local newVersionString=$1
   case $newVersionString in
-    22.*)
+    23.*)
       export builtParam="=current"
       ;;
-    20.*)
+    22.*)
       export builtParam="=lts"
       ;;
     *)
