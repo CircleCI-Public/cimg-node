@@ -6,7 +6,7 @@
 # the browsers variant. The normal version is based on the node variant of that
 # image. As this IS a Node image, there isn't a node variant.
 
-FROM cimg/node:20.19.2
+FROM cimg/node:20.19.3
 
 LABEL maintainer="CircleCI Community & Partner Engineering Team <community-partner@circleci.com>"
 
@@ -36,14 +36,14 @@ RUN sudo apt-get update && \
     sudo apt-get install -y --no-install-recommends --no-upgrade \
         fonts-liberation \
         libappindicator3-1 \
-        libasound2 \
+        libasound2t64 \
         libatk-bridge2.0-0 \
         libatspi2.0-0 \
         libcairo2 \
         libcups2 \
         libgbm1 \
         libgdk-pixbuf2.0-0 \
-        libgtk-3-0 \
+        libgtk-3-0t64 \
         libpango-1.0-0 \
         libpangocairo-1.0-0 \
         libxcursor1 \
