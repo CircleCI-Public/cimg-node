@@ -20,7 +20,7 @@ RUN [[ $(uname -m) == "x86_64" ]] && ARCH="x64" || ARCH="arm64" && \
 
 ENV PATH=/home/circleci/.yarn/bin:$PATH
 
-RUN npm install --global yarn
+RUN sudo npm install -g yarn
 
 # Install an alternative, but growing in popularity Node.js package manager
 RUN sudo npm install -g pnpm
