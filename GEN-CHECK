@@ -1,1 +1,1 @@
-GEN_CHECK=(24.5.0=current 22.18.0=lts)
+GEN_CHECK=(24.6.0=current)
