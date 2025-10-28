@@ -10,7 +10,7 @@ FROM cimg/base:2025.10
 
 LABEL maintainer="CircleCI Execution Team <eng-execution@circleci.com>"
 
-ENV NODE_VERSION=22.21.1
+ENV NODE_VERSION=25.1.0
 
 RUN [[ $(uname -m) == "x86_64" ]] && ARCH="x64" || ARCH="arm64" && \
  	curl -L -o node.tar.xz "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-${ARCH}.tar.xz" && \
