@@ -92,8 +92,8 @@ cimg/node:<node-version>
 `<node-version>` - The version of Node.js to use.
 This can be a full SemVer point release (such as `10.16.3`), or just the minor release (such as `12.6`), or a version alias.
 This Node.js image has two version aliases, "current" and "lts".
-This aliases will always point to the latest "current" and latest "lts" releases that Node.js has as according to [their website](https://nodejs.org/en/).
-Keep in mind that using an alias tag will be less stable that specifying a full SemVer version.
+These aliases will always point to the latest "current" and latest "lts" releases that Node.js has according to [their website](https://nodejs.org/en/).
+Keep in mind that using an alias tag will be less stable than specifying a full SemVer version.
 If you use the minor release tag, it will automatically point to future patch updates as they are released by Node.js.
 For example, the tag `12.6` points to Node.js v12.6.0 now, but when the next release comes out, it will point to Node.js v12.6.1.
 
