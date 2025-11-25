@@ -6,7 +6,7 @@
 # the browsers variant. The normal version is based on the node variant of that
 # image. As this IS a Node image, there isn't a node variant.
 
-FROM cimg/node:20.19.5
+FROM cimg/node:20.19.6
 
 LABEL maintainer="CircleCI Community & Partner Engineering Team <community-partner@circleci.com>"
 
@@ -17,14 +17,12 @@ RUN curl -sSL -o selenium-server-standalone-${SELENIUM_VER}.jar "https://seleniu
     rm selenium-server-standalone-${SELENIUM_VER}.jar
 
 RUN sudo apt-get update && \
-
     # Install Java only if it's not already available
     # Java is installed for Selenium
     if ! command -v java > /dev/null; then \
         echo "Java not found in parent image, installing..." && \
         sudo apt-get install -y --no-install-recommends --no-upgrade openjdk-11-jre; \
     fi && \
-
     # Firefox deps
     sudo apt-get install -y --no-install-recommends --no-upgrade \
 		libdbus-glib-1-2 \
@@ -58,9 +56,6 @@ RUN sudo apt-get update && \
 # when booting the image.
 LABEL com.circleci.preserve-entrypoint=true
 ENV DISPLAY=":99"
-#RUN	printf '#!/bin/sh\nXvfb :99 -screen 0 1280x1024x24 &\nexec "$@"\n' > /tmp/entrypoint && \
-#	chmod +x /tmp/entrypoint && \
-#	sudo mv /tmp/entrypoint /docker-entrypoint.sh
 RUN	printf '#!/bin/sh\nXvfb :99 -screen 0 1280x1024x24 &\nexec "$@"\n' | sudo tee /docker-entrypoint.sh && \
 	sudo chmod +x /docker-entrypoint.sh
 
