@@ -56,8 +56,43 @@ RUN sudo apt-get update && \
 # when booting the image.
 LABEL com.circleci.preserve-entrypoint=true
 ENV DISPLAY=":99"
+
 RUN	printf '#!/bin/sh\nXvfb :99 -screen 0 1280x1024x24 &\nexec "$@"\n' | sudo tee /docker-entrypoint.sh && \
 	sudo chmod +x /docker-entrypoint.sh
+
+RUN set -ex; \
+    # The lock file is /tmp/.X<DISPLAY_NUM>-lock, so for :99 it's /tmp/.X99-lock
+    printf '#!/bin/sh\n\n' | tee /docker-entrypoint.sh; \
+    printf 'DISPLAY_NUM=:99\n' | tee -a /docker-entrypoint.sh; \
+    printf 'SCREEN_RES="1280x1024x24"\n' | tee -a /docker-entrypoint.sh; \
+    printf 'LOCK_FILE="/tmp/.X99-lock"\n\n' | tee -a /docker-entrypoint.sh; \
+    \
+    printf 'echo "Starting X virtual frame buffer (${DISPLAY_NUM} -${SCREEN_RES})..."\n' | tee -a /docker-entrypoint.sh; \
+    printf 'Xvfb ${DISPLAY_NUM} -screen 0 ${SCREEN_RES} &\n' | tee -a /docker-entrypoint.sh; \
+    printf 'XVFB_PID=$!\n\n' | tee -a /docker-entrypoint.sh; \
+    \
+    printf 'WAIT_TIMEOUT=10\n' | tee -a /docker-entrypoint.sh; \
+    printf 'ATTEMPTS=0\n' | tee -a /docker-entrypoint.sh; \
+    printf 'while [ ! -f ${LOCK_FILE} ] && [ ${ATTEMPTS} -lt ${WAIT_TIMEOUT} ]; do\n' | tee -a /docker-entrypoint.sh; \
+    printf '    echo "Waiting for Xvfb to start... (Attempt ${ATTEMPTS}/${WAIT_TIMEOUT})"\n' | tee -a /docker-entrypoint.sh; \
+    printf '    sleep 1\n' | tee -a /docker-entrypoint.sh; \
+    printf '    ATTEMPTS=$((ATTEMPTS + 1))\n' | tee -a /docker-entrypoint.sh; \
+    printf '    if ! kill -0 $XVFB_PID 2>/dev/null; then\n' | tee -a /docker-entrypoint.sh; \
+    printf '        echo "Error: Xvfb process died unexpectedly."\n' | tee -a /docker-entrypoint.sh; \
+    printf '        exit 1\n' | tee -a /docker-entrypoint.sh; \
+    printf '    fi\n' | tee -a /docker-entrypoint.sh; \
+    printf 'done\n\n' | tee -a /docker-entrypoint.sh; \
+    \
+    printf 'if [ -f ${LOCK_FILE} ]; then\n' | tee -a /docker-entrypoint.sh; \
+    printf '    echo "Xvfb started successfully."\n' | tee -a /docker-entrypoint.sh; \
+    printf '    # The DISPLAY environment variable is already set by ENV in the Dockerfile\n' | tee -a /docker-entrypoint.sh; \
+    printf '    exec "$@"\n' | tee -a /docker-entrypoint.sh; \
+    printf 'else\n' | tee -a /docker-entrypoint.sh; \
+    printf '    echo "Error: Xvfb failed to start within the timeout."\n' | tee -a /docker-entrypoint.sh; \
+    printf '    exit 1\n' | tee -a /docker-entrypoint.sh; \
+    printf 'fi\n' | tee -a /docker-entrypoint.sh; \
+    \
+    chmod +x /docker-entrypoint.sh
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["/bin/sh"]
