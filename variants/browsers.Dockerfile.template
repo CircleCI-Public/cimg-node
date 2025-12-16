@@ -56,6 +56,8 @@ RUN sudo apt-get update && \
 # when booting the image.
 LABEL com.circleci.preserve-entrypoint=true
 
+ENV DISPLAY=":99"
+
 RUN printf '#!/bin/sh\n\n' | sudo tee /docker-entrypoint.sh; \
     printf 'DISPLAY_NUM=:99\n' | sudo tee -a /docker-entrypoint.sh; \
     printf 'SCREEN_RES="1280x1024x24"\n' | sudo tee -a /docker-entrypoint.sh; \
