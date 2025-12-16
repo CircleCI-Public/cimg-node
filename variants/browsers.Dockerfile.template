@@ -25,12 +25,12 @@ RUN sudo apt-get update && \
     fi && \
     # Firefox deps
     sudo apt-get install -y --no-install-recommends --no-upgrade \
-		libdbus-glib-1-2 \
-		libgtk-3-dev \
-		libxt6 \
-	&& \
+        libdbus-glib-1-2 \
+        libgtk-3-dev \
+        libxt6 \
+        && \
     # Google Chrome deps
-	# Some of these packages should be pulled into their own section
+    # Some of these packages should be pulled into their own section
     sudo apt-get install -y --no-install-recommends --no-upgrade \
         fonts-liberation \
         libappindicator3-1 \
@@ -45,19 +45,49 @@ RUN sudo apt-get update && \
         libpango-1.0-0 \
         libpangocairo-1.0-0 \
         libxcursor1 \
-		libxss1 \
+        libxss1 \
         xdg-utils \
-		xvfb \
-	&& \
-	sudo rm -rf /var/lib/apt/lists/*
+        xvfb \
+        && \
+        sudo rm -rf /var/lib/apt/lists/*
 
 # Below is setup to allow xvfb to start when the container starts up.
 # The label in particular allows this image to override what CircleCI does
 # when booting the image.
 LABEL com.circleci.preserve-entrypoint=true
-ENV DISPLAY=":99"
-RUN	printf '#!/bin/sh\nXvfb :99 -screen 0 1280x1024x24 &\nexec "$@"\n' | sudo tee /docker-entrypoint.sh && \
-	sudo chmod +x /docker-entrypoint.sh
+
+RUN printf '#!/bin/sh\n\n' | sudo tee /docker-entrypoint.sh; \
+    printf 'DISPLAY_NUM=:99\n' | sudo tee -a /docker-entrypoint.sh; \
+    printf 'SCREEN_RES="1280x1024x24"\n' | sudo tee -a /docker-entrypoint.sh; \
+    printf 'LOCK_FILE="/tmp/.X99-lock"\n\n' | sudo tee -a /docker-entrypoint.sh; \
+    \
+    printf 'echo "Starting X virtual frame buffer (${DISPLAY_NUM} -${SCREEN_RES})..."\n' | sudo tee -a /docker-entrypoint.sh; \
+    printf 'Xvfb ${DISPLAY_NUM} -screen 0 ${SCREEN_RES} &\n' | sudo tee -a /docker-entrypoint.sh; \
+    printf 'XVFB_PID=$!\n\n' | sudo tee -a /docker-entrypoint.sh; \
+    \
+    printf 'WAIT_TIMEOUT=10\n' | sudo tee -a /docker-entrypoint.sh; \
+    printf 'ATTEMPTS=0\n' | sudo tee -a /docker-entrypoint.sh; \
+    printf 'while [ ! -f ${LOCK_FILE} ] && [ ${ATTEMPTS} -lt ${WAIT_TIMEOUT} ]; do\n' | sudo tee -a /docker-entrypoint.sh; \
+    printf '    echo "Waiting for Xvfb to start... (Attempt ${ATTEMPTS}/${WAIT_TIMEOUT})"\n' | sudo tee -a /docker-entrypoint.sh; \
+    printf '    sleep 1\n' | sudo tee -a /docker-entrypoint.sh; \
+    printf '    ATTEMPTS=$((ATTEMPTS + 1))\n' | sudo tee -a /docker-entrypoint.sh; \
+    printf '    if ! kill -0 $XVFB_PID 2>/dev/null; then\n' | sudo tee -a /docker-entrypoint.sh; \
+    printf '        echo "Error: Xvfb process died unexpectedly."\n' | sudo tee -a /docker-entrypoint.sh; \
+    printf '        exit 1\n' | sudo tee -a /docker-entrypoint.sh; \
+    printf '    fi\n' | sudo tee -a /docker-entrypoint.sh; \
+    printf 'done\n\n' | sudo tee -a /docker-entrypoint.sh; \
+    \
+    printf 'if [ -f ${LOCK_FILE} ]; then\n' | sudo tee -a /docker-entrypoint.sh; \
+    printf '    echo "Xvfb started successfully."\n' | sudo tee -a /docker-entrypoint.sh; \
+    printf '    # The DISPLAY environment variable is already set by ENV in the Dockerfile\n' | sudo tee -a /docker-entrypoint.sh; \
+    printf '    exec "$@"\n' | sudo tee -a /docker-entrypoint.sh; \
+    printf 'else\n' | sudo tee -a /docker-entrypoint.sh; \
+    printf '    echo "Error: Xvfb failed to start within the timeout."\n' | sudo tee -a /docker-entrypoint.sh; \
+    printf '    exit 1\n' | sudo tee -a /docker-entrypoint.sh; \
+    printf 'fi\n' | sudo tee -a /docker-entrypoint.sh; \
+    printf 'exec "$@"\n'  | sudo tee -a /docker-entrypoint.sh; \
+    \
+    sudo chmod +x /docker-entrypoint.sh
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["/bin/sh"]
