@@ -38,6 +38,9 @@ jobs:
   build:
     docker:
       - image: cimg/node:15.0.1
+        environment:
+          INSTALL_XFVB: 1
+          WAIT_TIMEOUT: 30
     steps:
       - checkout
       - run: node --version
@@ -45,6 +48,7 @@ jobs:
 
 In the above example, the CircleCI Node.js Docker image is used for the primary container.
 More specifically, the tag `15.0.1` is used meaning the version of Node.js will be Node.js v15.0.1.
+Some environment variables can be tweaked to define the behavior of the docker-entrypoint.sh script: the INSTALL_XFVB ensures the logic to wait for the xvfb server to start runs (this can be disabled by setting a value of 0, WAIT_TIMEOUT is the number of seconds to wait for the xvfb server to start).
 You can now use Node.js within the steps for this job.
 
 ## How This Image Works
