@@ -38,9 +38,6 @@ jobs:
   build:
     docker:
       - image: cimg/node:25.4.0
-        environment:
-          INSTALL_XFVB: 1
-          WAIT_TIMEOUT: 30
     steps:
       - checkout
       - run: node --version
@@ -48,7 +45,6 @@ jobs:
 
 In the above example, the CircleCI Node.js Docker image is used for the primary container.
 More specifically, the tag `25.4.0` is used meaning the version of Node.js will be Node.js v25.4.0.
-Some environment variables can be tweaked to define the behavior of the docker-entrypoint.sh script: the INSTALL_XFVB ensures the logic to wait for the xvfb server to start runs (this can be disabled by setting a value of 0, WAIT_TIMEOUT is the number of seconds to wait for the xvfb server to start).
 You can now use Node.js within the steps for this job.
 
 ## How This Image Works
@@ -68,14 +64,18 @@ The browsers variant is the same Node.js image but with Java, Selenium, and brow
 The browsers variant can be used by appending `-browser` to the end of an existing `cimg/node` tag.
 The browsers variant is designed to work in conjunction with the [CircleCI Browser Tools orb](https://circleci.com/developer/orbs/orb/circleci/browser-tools).
 You can use the orb to install a version of Google Chrome and/or Firefox into your build. The image contains all of the supporting tools needed to use both the browser and its driver.
+Some environment variables can be tweaked to define the behavior of the docker-entrypoint.sh script: the INSTALL_XFVB ensures the logic to wait for the xvfb server to start runs (this can be disabled by setting a value of 0, WAIT_TIMEOUT is the number of seconds to wait for the xvfb server to start).
 
 ```yaml
 orbs:
-  browser-tools: circleci/browser-tools@1.1.0
+  browser-tools: circleci/browser-tools@2.4.0
 jobs:
   build:
     docker:
       - image: cimg/node:25.4.0-browsers
+        environment:
+          INSTALL_XFVB: 1
+          WAIT_TIMEOUT: 30
     steps:
       - browser-tools/install-browser-tools
       - checkout
