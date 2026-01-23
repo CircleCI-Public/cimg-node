@@ -56,9 +56,8 @@ RUN sudo apt-get update && \
 # when booting the image.
 LABEL com.circleci.preserve-entrypoint=true
 
-ENV DISPLAY=""
 ENV WAIT_TIMEOUT="30"
-ENV INSTALL_XVFB=1
+ENV DISPLAY=${INSTALL_XVFB:+:99}
 
 RUN printf '#!/bin/sh\n\n' | sudo tee /docker-entrypoint.sh; \
     printf 'if [ "$INSTALL_XFVB" -eq 1 ]; then\n' | sudo tee -a /docker-entrypoint.sh; \
