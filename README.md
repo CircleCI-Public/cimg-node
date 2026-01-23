@@ -65,10 +65,11 @@ The browsers variant can be used by appending `-browser` to the end of an existi
 The browsers variant is designed to work in conjunction with the [CircleCI Browser Tools orb](https://circleci.com/developer/orbs/orb/circleci/browser-tools).
 You can use the orb to install a version of Google Chrome and/or Firefox into your build. The image contains all of the supporting tools needed to use both the browser and its driver.
 Some environment variables can be tweaked to define the behavior of the docker-entrypoint.sh script:
-- if INSTALL_XVFB is defined with any value, the logic to wait for the xvfb server to start runs
+- if INSTALL_XVFB is defined with any value, the logic to wait for the xvfb server to start runs. This is the default behavior. If the user does not want to install the xvfb server, the user has to set this value as empty.
 - if INSTALL_XVFB is defined with some value, the WAIT_TIMEOUT is expected to be a integer number that defines how many seconds to wait for the xvfb server to start). It has a default value of 30 seconds.
 A DISPLAY environment variable with the value of ":99" will be automatically defined and exported if and only if the INSTALL_XVFB environment variable is not empty.
 
+Example installing xvfb server:
 ```yaml
 orbs:
   browser-tools: circleci/browser-tools@2.4.0
@@ -86,6 +87,20 @@ jobs:
           node --version
           java --version
           google-chrome --version
+```
+
+Example skipping xvfb server:
+```yaml
+orbs:
+  browser-tools: circleci/browser-tools@2.4.0
+jobs:
+  build:
+    docker:
+      - image: cimg/node:25.4.0-browsers
+        environment:
+          INSTALL_XVFB: ""
+    steps:
+      - checkout
 ```
 
 ### Tagging Scheme

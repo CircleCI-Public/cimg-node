@@ -56,6 +56,7 @@ RUN sudo apt-get update && \
 # when booting the image.
 LABEL com.circleci.preserve-entrypoint=true
 
+ENV INSTALL_XVFB="yes"
 ENV WAIT_TIMEOUT="30"
 ENV DISPLAY=${INSTALL_XVFB:+:99}
 
