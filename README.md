@@ -5,12 +5,12 @@
 		<img alt="Node.js Logo" src="https://raw.github.com/CircleCI-Public/cimg-node/main/img/circle-nodejs.svg?sanitize=true" width="75" />
 	</p>
 	<h1>CircleCI Convenience Images => Node.js</h1>
-	<h3>A Continous Integration focused Node.js Docker image built to run on CircleCI</h3>
+	<h3>A Continuous Integration focused Node.js Docker image built to run on CircleCI</h3>
 </div>
 
 [![CircleCI Build Status](https://circleci.com/gh/CircleCI-Public/cimg-node.svg?style=shield)](https://circleci.com/gh/CircleCI-Public/cimg-node) [![Software License](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/CircleCI-Public/cimg-node/master/LICENSE) [![Docker Pulls](https://img.shields.io/docker/pulls/cimg/node)](https://hub.docker.com/r/cimg/node) [![CircleCI Community](https://img.shields.io/badge/community-CircleCI%20Discuss-343434.svg)](https://discuss.circleci.com/c/ecosystem/circleci-images) [![Repository](https://img.shields.io/badge/github-README-brightgreen)](https://github.com/CircleCI-Public/cimg-node)
 
-***This image is designed to supercede the legacy CircleCI Node.js image, `circleci/node`.***
+***This image is designed to supersede the legacy CircleCI Node.js image, `circleci/node`.***
 
 `cimg/node` is a Docker image created by CircleCI with continuous integration builds in mind.
 Each tag contains a version of Node.js, `npm`, `yarn v1`, and any binaries and tools that are required for builds to complete successfully in a CircleCI environment.
@@ -52,7 +52,7 @@ You can now use Node.js within the steps for this job.
 This image contains the Node.js programming language and its package managers.
 This includes `npm` and `yarn`.
 
-There was a recent change reimplmenting vanilla node after briefly using nvm. While it is implied and recommended to not use `sudo` when possible, you will now need it when installing packages globally.
+There was a recent change reimplementing vanilla node after briefly using `nvm`. While it is implied and recommended to not use `sudo` when possible, you will now need it when installing packages globally.
 
 ### Variants
 
@@ -221,10 +221,10 @@ Please check out our [contributing guide](.github/CONTRIBUTING.md) which outline
 
 ## Additional Resources
 
-[CircleCI Docs](https://circleci.com/docs/) - The official CircleCI Documentation website.  
+[CircleCI Docs](https://circleci.com/docs/) - The official CircleCI Documentation website.
 [CircleCI Configuration Reference](https://circleci.com/docs/2.0/configuration-reference/#section=configuration) - From CircleCI Docs, the configuration reference page is one of the most useful pages we have.
-It will list all of the keys and values supported in `.circleci/config.yml`.  
-[Docker Docs](https://docs.docker.com/) - For simple projects this won't be needed but if you want to dive deeper into learning Docker, this is a great resource.  
+It will list all of the keys and values supported in `.circleci/config.yml`.
+[Docker Docs](https://docs.docker.com/) - For simple projects this won't be needed but if you want to dive deeper into learning Docker, this is a great resource.
 
 ## License
 
