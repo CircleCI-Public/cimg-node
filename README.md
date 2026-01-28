@@ -37,14 +37,14 @@ For example:
 jobs:
   build:
     docker:
-      - image: cimg/node:25.4.0
+      - image: cimg/node:25.5.0
     steps:
       - checkout
       - run: node --version
 ```
 
 In the above example, the CircleCI Node.js Docker image is used for the primary container.
-More specifically, the tag `25.4.0` is used meaning the version of Node.js will be Node.js v25.4.0.
+More specifically, the tag `25.5.0` is used meaning the version of Node.js will be Node.js v25.5.0.
 You can now use Node.js within the steps for this job.
 
 ## How This Image Works
@@ -73,7 +73,7 @@ orbs:
 jobs:
   build:
     docker:
-      - image: cimg/node:25.4.0-browsers
+      - image: cimg/node:25.5.0-browsers
         environment:
           XVFB_TIMEOUT: 120
     steps:
