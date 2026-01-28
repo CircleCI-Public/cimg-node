@@ -67,7 +67,6 @@ You can use the orb to install a version of Google Chrome and/or Firefox into yo
 Some environment variables can be tweaked to define the behavior of the docker-entrypoint.sh script:
 - XVFB_TIMEOUT is expected to be a integer number that defines how many seconds to wait for the xvfb server to start). It has a default value of 30 seconds.
 
-Example installing xvfb server:
 ```yaml
 orbs:
   browser-tools: circleci/browser-tools@2.4.0
@@ -76,7 +75,7 @@ jobs:
     docker:
       - image: cimg/node:25.4.0-browsers
         environment:
-          XVFB_TIMEOUT: 30
+          XVFB_TIMEOUT: 120
     steps:
       - browser-tools/install-browser-tools
       - checkout
@@ -84,18 +83,6 @@ jobs:
           node --version
           java --version
           google-chrome --version
-```
-
-Example skipping xvfb server:
-```yaml
-orbs:
-  browser-tools: circleci/browser-tools@2.4.0
-jobs:
-  build:
-    docker:
-      - image: cimg/node:25.4.0-browsers
-    steps:
-      - checkout
 ```
 
 ### Tagging Scheme
