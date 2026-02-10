@@ -6,7 +6,7 @@
 # the browsers variant. The normal version is based on the node variant of that
 # image. As this IS a Node image, there isn't a node variant.
 
-FROM cimg/node:24.13.0
+FROM cimg/node:24.13.1
 
 LABEL maintainer="CircleCI Community & Partner Engineering Team <community-partner@circleci.com>"
 
@@ -56,6 +56,7 @@ RUN sudo apt-get update && \
 # when booting the image.
 LABEL com.circleci.preserve-entrypoint=true
 
+ENV XVFB_TIMEOUT="30"
 ENV DISPLAY=":99"
 
 RUN printf '#!/bin/sh\n\n' | sudo tee /docker-entrypoint.sh; \
@@ -67,10 +68,9 @@ RUN printf '#!/bin/sh\n\n' | sudo tee /docker-entrypoint.sh; \
     printf 'Xvfb ${DISPLAY_NUM} -screen 0 ${SCREEN_RES} &\n' | sudo tee -a /docker-entrypoint.sh; \
     printf 'XVFB_PID=$!\n\n' | sudo tee -a /docker-entrypoint.sh; \
     \
-    printf 'WAIT_TIMEOUT=10\n' | sudo tee -a /docker-entrypoint.sh; \
     printf 'ATTEMPTS=0\n' | sudo tee -a /docker-entrypoint.sh; \
-    printf 'while [ ! -f ${LOCK_FILE} ] && [ ${ATTEMPTS} -lt ${WAIT_TIMEOUT} ]; do\n' | sudo tee -a /docker-entrypoint.sh; \
-    printf '    echo "Waiting for Xvfb to start... (Attempt ${ATTEMPTS}/${WAIT_TIMEOUT})"\n' | sudo tee -a /docker-entrypoint.sh; \
+    printf 'while [ ! -f ${LOCK_FILE} ] && [ ${ATTEMPTS} -lt ${XVFB_TIMEOUT} ]; do\n' | sudo tee -a /docker-entrypoint.sh; \
+    printf '    echo "Waiting for Xvfb to start... (Attempt ${ATTEMPTS}/${XVFB_TIMEOUT})"\n' | sudo tee -a /docker-entrypoint.sh; \
     printf '    sleep 1\n' | sudo tee -a /docker-entrypoint.sh; \
     printf '    ATTEMPTS=$((ATTEMPTS + 1))\n' | sudo tee -a /docker-entrypoint.sh; \
     printf '    if ! kill -0 $XVFB_PID 2>/dev/null; then\n' | sudo tee -a /docker-entrypoint.sh; \
@@ -81,12 +81,12 @@ RUN printf '#!/bin/sh\n\n' | sudo tee /docker-entrypoint.sh; \
     \
     printf 'if [ -f ${LOCK_FILE} ]; then\n' | sudo tee -a /docker-entrypoint.sh; \
     printf '    echo "Xvfb started successfully."\n' | sudo tee -a /docker-entrypoint.sh; \
-    printf '    # The DISPLAY environment variable is already set by ENV in the Dockerfile\n' | sudo tee -a /docker-entrypoint.sh; \
     printf '    exec "$@"\n' | sudo tee -a /docker-entrypoint.sh; \
     printf 'else\n' | sudo tee -a /docker-entrypoint.sh; \
     printf '    echo "Error: Xvfb failed to start within the timeout."\n' | sudo tee -a /docker-entrypoint.sh; \
     printf '    exit 1\n' | sudo tee -a /docker-entrypoint.sh; \
     printf 'fi\n' | sudo tee -a /docker-entrypoint.sh; \
+    \
     printf 'exec "$@"\n'  | sudo tee -a /docker-entrypoint.sh; \
     \
     sudo chmod +x /docker-entrypoint.sh
