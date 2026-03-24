@@ -6,11 +6,11 @@
 # specific reason to use a different one. This means January, April, July, or
 # October.
 
-FROM cimg/base:2025.10
+FROM cimg/base:2026.03
 
 LABEL maintainer="CircleCI Execution Team <eng-execution@circleci.com>"
 
-ENV NODE_VERSION=20.20.1
+ENV NODE_VERSION=20.20.2
 
 RUN [[ $(uname -m) == "x86_64" ]] && ARCH="x64" || ARCH="arm64" && \
  	curl -L -o node.tar.xz "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-${ARCH}.tar.xz" && \
