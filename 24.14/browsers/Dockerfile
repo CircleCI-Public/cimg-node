@@ -6,7 +6,7 @@
 # the browsers variant. The normal version is based on the node variant of that
 # image. As this IS a Node image, there isn't a node variant.
 
-FROM cimg/node:24.14.0
+FROM cimg/node:24.14.1
 
 LABEL maintainer="CircleCI Community & Partner Engineering Team <community-partner@circleci.com>"
 
@@ -28,6 +28,9 @@ RUN sudo apt-get update && \
         libdbus-glib-1-2 \
         libgtk-3-dev \
         libxt6 \
+        # Mesa software rendering - required for WebGL in Docker (no GPU available)
+        libgl1-mesa-dri \
+        libegl-mesa0 \
         && \
     # Google Chrome deps
     # Some of these packages should be pulled into their own section
