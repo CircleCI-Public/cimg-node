@@ -25,7 +25,7 @@ workflows:
     jobs:
       - cimg/build-and-deploy:
           name: "Test"
-          resource-class: xlarge
+          resource-class: xlarge.gen2
           docker-namespace: ccitest
           docker-repository: node
           filters:
@@ -44,7 +44,7 @@ workflows:
                 template: basic_fail_1
       - cimg/build-and-deploy:
           name: "Deploy"
-          resource-class: xlarge
+          resource-class: xlarge.gen2
           docker-repository: node
           filters:
             branches:
