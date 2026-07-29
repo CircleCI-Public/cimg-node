@@ -14,7 +14,6 @@ workflows:
     when: << pipeline.parameters.cron >>
     jobs:
       - cimg/update:
-          resource-class: small.gen2
           update-script: nodeFeed.sh
           context:
             - slack-notification-access-token
@@ -26,7 +25,7 @@ workflows:
     jobs:
       - cimg/build-and-deploy:
           name: "Test"
-          resource-class: xlarge.gen3
+          resource-class: xlarge.gen2
           docker-namespace: ccitest
           docker-repository: node
           filters:
@@ -45,7 +44,7 @@ workflows:
                 template: basic_fail_1
       - cimg/build-and-deploy:
           name: "Deploy"
-          resource-class: xlarge.gen3
+          resource-class: xlarge.gen2
           docker-repository: node
           filters:
             branches:
