@@ -90,3 +90,9 @@ jobs:
             if git log -1 --pretty=%s | grep "\[release\]"; then
               git diff --quiet HEAD~1 ALIASES || ./push-images.sh
             fi
+      - run:
+          name: "Push major version tags if release"
+          command: |
+            if git log -1 --pretty=%s | grep "\[release\]"; then
+              ./push-major-tags.sh
+            fi
