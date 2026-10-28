@@ -8,3 +8,5 @@ docker buildx build --platform=linux/amd64,linux/arm64 --file 26.13/Dockerfile -
 docker buildx build --platform=linux/amd64 --file 26.13/browsers/Dockerfile -t cimg/node:26.13.0-browsers -t cimg/node:26.13-browsers --push .
 docker buildx build --platform=linux/amd64,linux/arm64 --file 24.22/Dockerfile -t cimg/node:24.22.2 -t cimg/node:24.22 --push .
 docker buildx build --platform=linux/amd64 --file 24.22/browsers/Dockerfile -t cimg/node:24.22.2-browsers -t cimg/node:24.22-browsers --push .
+docker buildx build --platform=linux/amd64,linux/arm64 --file 22.23/Dockerfile -t cimg/node:22.23.4 -t cimg/node:22.23 --push .
+docker buildx build --platform=linux/amd64 --file 22.23/browsers/Dockerfile -t cimg/node:22.23.4-browsers -t cimg/node:22.23-browsers --push .
