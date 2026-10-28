@@ -14,7 +14,7 @@ buildParameter () {
     26.*)
       export builtParam="=current"
       ;;
-    24.*)
+    26.*)
       export builtParam="=lts"
       ;;
     *)
