@@ -3,3 +3,5 @@
 set -eo pipefail
 docker buildx imagetools create -t cimg/node:current cimg/node:26.13.1
 docker buildx imagetools create -t cimg/node:current-browsers cimg/node:26.13.1-browsers
+docker buildx imagetools create -t cimg/node:lts cimg/node:26.13.1
+docker buildx imagetools create -t cimg/node:lts-browsers cimg/node:26.13.1-browsers
