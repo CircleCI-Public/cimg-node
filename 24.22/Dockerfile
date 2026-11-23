@@ -14,7 +14,9 @@ ENV NODE_VERSION=24.22.3
 
 RUN [[ $(uname -m) == "x86_64" ]] && ARCH="x64" || ARCH="arm64" && \
  	curl -L -o node.tar.xz "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-${ARCH}.tar.xz" && \
-	sudo tar -xJf node.tar.xz -C /usr/local --strip-components=1 && \
+	sudo tar -xJf node.tar.xz -C /usr/local --strip-components=1 --no-same-owner && \
+	# Don't inherit the tarball's uid; give circleci ownership of Node's files.
+	tar -tJf node.tar.xz | cut -d/ -f2- | sed '/^$/d; s|^|/usr/local/|' | sudo xargs -d '\n' chown -h circleci:circleci && \
 	rm node.tar.xz && \
 	sudo ln -s /usr/local/bin/node /usr/local/bin/nodejs
 
